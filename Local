@@ -1,0 +1,3 @@
+# redis: redis-server --port 6380
+web: python -u manage.py runserver --port 5050
+# worker: python -u manage.py run_worker --port 6380
