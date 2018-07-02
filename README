@@ -1,1 +1,27 @@
 Work with Science History Institute on community history of biotech
+
+Flask app connects with Hypothesis service and Hypothesis client.
+
+1. Start Docker containers for Hypothesis service.
+  + In `hypothesis/h/`: 
+    + `sudo docker-compose up`
+2. Start Hypothesis service.
+  + In `hypothesis/h/`:
+    + `export CLIENT_OAUTH_ID="<client-id>"`
+    + `export CLIENT_URL=http://localhost:3001/hypothesis`
+    + `make dev`
+  + Uses ports 5000, 5001?
+3. Start Hypothesis client.
+  + In `hypothesis/client/`:
+    + `export SIDEBAR_APP_URL=http://localhost:5000/app.html`
+    + `gulp watch`
+  + Uses ports 3000, 3001
+4. Start Flask app.
+  + In `science_history_institute/flask/`:
+    + `honcho start -f Local -e .env`
+  + Uses port 5050
+
+On local machine, need to SSH tunnel to ports 5050, 5000, 5001, 3000?, 3001
+e.g.: `ssh -NfL 5050:localhost:5050 username@server.etc`
+
+If the team at Hypothesis adds us as an Oauth client, we won't need to run 1-3 anymore.
