@@ -25,7 +25,7 @@
       ('main.about', 'About', 'info')
     ]%}
     {% set user = [] %}
-    {% if current_user.is_authenticated %}
+    {% if current_user.is_authenticated and current_user.is_admin() %}
       {% set user = ([(current_user.role.index + '.index', current_user.role.name + ' Dashboard', 'user')]) %}
     {% endif %} 
     {{ render_menu_items( endpoints +  user ) }}

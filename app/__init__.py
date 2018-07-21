@@ -90,4 +90,7 @@ def create_app(config_name):
     from .admin import admin as admin_blueprint
     app.register_blueprint(admin_blueprint, url_prefix='/admin')
 
+    from .experimental import experimental as experimental_blueprint
+    app.register_blueprint(experimental_blueprint, url_prefix='/experimental')
+
     return app

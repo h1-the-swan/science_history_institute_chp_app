@@ -4,9 +4,11 @@
 
 {% assets 'vendor_css' %}<link rel="stylesheet" type="text/css" href="{{ ASSET_URL }}">{% endassets %}
 {% assets 'app_css' %}<link rel="stylesheet" type="text/css" href="{{ ASSET_URL }}">{% endassets %}
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/se/dt-1.10.16/datatables.min.css"/>
 
 {% assets 'vendor_js' %}<script type="text/javascript" src="{{ ASSET_URL }}"></script>{% endassets %}
 {% assets 'app_js' %}<script type="text/javascript" src="{{ ASSET_URL }}"></script>{% endassets %}
+<script type="text/javascript" src="https://cdn.datatables.net/v/se/dt-1.10.16/datatables.min.js"></script>
 
 {% if config.GOOGLE_ANALYTICS_ID %}
 <!-- Google Analytics -->

@@ -1,10 +1,11 @@
 from flask import url_for
 from flask_wtf import Form
 from wtforms import ValidationError
-from wtforms.fields import (
+from wtforms import (
     BooleanField,
     PasswordField,
     StringField,
+    TextAreaField,
     SubmitField,
 )
 from wtforms.fields.html5 import EmailField
@@ -12,11 +13,15 @@ from wtforms.validators import Email, EqualTo, InputRequired, Length
 
 from app.models import User
 
+class UpdateProfileForm(Form):
+    bio = TextAreaField('Bio', validators=[Length(0, 20000)])
+    website = StringField('Personal Website', validators=[Length(0, 128)])
+    submit = SubmitField('Update Profile')
 
 class LoginForm(Form):
     email = EmailField(
         'Email', validators=[InputRequired(),
-                             Length(1, 64),
+                             Length(1, 128),
                              Email()])
     password = PasswordField('Password', validators=[InputRequired()])
     remember_me = BooleanField('Keep me logged in')
@@ -24,15 +29,21 @@ class LoginForm(Form):
 
 
 class RegistrationForm(Form):
-    first_name = StringField(
-        'First name', validators=[InputRequired(),
-                                  Length(1, 64)])
-    last_name = StringField(
-        'Last name', validators=[InputRequired(),
+    # first_name = StringField(
+    #     'First name', validators=[InputRequired(),
+    #                               Length(1, 64)])
+    # last_name = StringField(
+    #     'Last name', validators=[InputRequired(),
+    #                              Length(1, 64)])
+    username = StringField(
+        'Username', validators=[InputRequired(),
                                  Length(1, 64)])
+    full_name = StringField(
+        'Full name', validators=[InputRequired(),
+                                 Length(1, 128)])
     email = EmailField(
         'Email', validators=[InputRequired(),
-                             Length(1, 64),
+                             Length(1, 128),
                              Email()])
     password = PasswordField(
         'Password',
@@ -49,11 +60,15 @@ class RegistrationForm(Form):
                                   '<a href="{}">log in</a> instead?)'.format(
                 url_for('account.login')))
 
+    def validate_username(self, field):
+        if User.query.filter_by(username=field.data).first():
+            raise ValidationError('Username already taken!')
+
 
 class RequestResetPasswordForm(Form):
     email = EmailField(
         'Email', validators=[InputRequired(),
-                             Length(1, 64),
+                             Length(1, 128),
                              Email()])
     submit = SubmitField('Reset password')
 
@@ -64,7 +79,7 @@ class RequestResetPasswordForm(Form):
 class ResetPasswordForm(Form):
     email = EmailField(
         'Email', validators=[InputRequired(),
-                             Length(1, 64),
+                             Length(1, 128),
                              Email()])
     new_password = PasswordField(
         'New password',
@@ -109,7 +124,7 @@ class ChangePasswordForm(Form):
 class ChangeEmailForm(Form):
     email = EmailField(
         'New email', validators=[InputRequired(),
-                                 Length(1, 64),
+                                 Length(1, 128),
                                  Email()])
     password = PasswordField('Password', validators=[InputRequired()])
     submit = SubmitField('Update email')
