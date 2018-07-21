@@ -41,8 +41,10 @@ def new_user():
     if form.validate_on_submit():
         user = User(
             role=form.role.data,
-            first_name=form.first_name.data,
-            last_name=form.last_name.data,
+            # first_name=form.first_name.data,
+            # last_name=form.last_name.data,
+            username=form.username.data,
+            full_name=form.full_name.data,
             email=form.email.data,
             password=form.password.data)
         db.session.add(user)
@@ -61,8 +63,10 @@ def invite_user():
     if form.validate_on_submit():
         user = User(
             role=form.role.data,
-            first_name=form.first_name.data,
-            last_name=form.last_name.data,
+            # first_name=form.first_name.data,
+            # last_name=form.last_name.data,
+            username=form.username.data,
+            full_name=form.full_name.data,
             email=form.email.data)
         db.session.add(user)
         db.session.commit()

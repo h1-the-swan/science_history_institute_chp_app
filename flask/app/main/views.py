@@ -1,9 +1,10 @@
 from __future__ import unicode_literals
 import os
 from flask import Blueprint, render_template, url_for, redirect, current_app, jsonify
-from flask_login import current_user
+from flask_login import current_user, login_required
 
 from app.models import EditableHTML, OralHistory
+from app.load_oral_histories import preprocess_oral_history
 
 main = Blueprint('main', __name__)
 
@@ -22,6 +23,7 @@ def about():
 
 @main.route('/histories')
 @main.route('/histories/<hist_id>')
+@login_required
 def histories(hist_id=None):
     if hist_id is None:
         data = OralHistory.query.all()
@@ -29,13 +31,14 @@ def histories(hist_id=None):
 
     oral_hist = OralHistory.query.get(hist_id)
     document = oral_hist.parse()
-    data = [p.text for p in document.paragraphs]
+    # data = [p.text for p in document.paragraphs]
+    data = preprocess_oral_history(document)
     service_url = current_app.hypothesis_client.service
     # hypothesis_api_url = "https://hypothes.is/api/"
     hypothesis_api_url = service_url + '/api/'
-    hypothesis_username = "{}_{}".format(current_user.first_name.lower(), current_user.last_name.lower())
-    hypothesis_grant_token = current_app.hypothesis_client.grant_token(username=hypothesis_username)
-    return render_template('main/display_oral_history.html', data=data, hypothesis_api_url=hypothesis_api_url, hypothesis_grant_token=hypothesis_grant_token.decode(), service_url=service_url)
+    # hypothesis_username = "{}_{}".format(current_user.first_name.lower(), current_user.last_name.lower())
+    hypothesis_grant_token = current_app.hypothesis_client.grant_token(username=current_user.username)
+    return render_template('main/display_oral_history.html', data=data, oral_hist=oral_hist, hypothesis_api_url=hypothesis_api_url, hypothesis_grant_token=hypothesis_grant_token.decode(), service_url=service_url)
 
 @main.route('/_login_fake')
 def _login_fake():

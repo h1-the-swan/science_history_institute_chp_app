@@ -1,0 +1,22 @@
+{% extends 'layouts/base.html' %}
+{% import 'macros/form_macros.html' as f %}
+
+{% block content %}
+<div class="ui text container">
+	{{ f.render_form(form, extra_classes='name_select_form') }}
+	{% for item in data %}
+	<p>{{ item }}</p>
+	{% endfor %}
+</div>
+<script type="text/javascript" charset="utf-8">
+	$( document ).ready(function() {
+		console.log('asdf');
+		console.log($('.name_select_form select'));
+		$('.name_select_form select').change(function() {
+			// $(this).closest('form').trigger('submit');
+			$(this).closest('form').submit();
+		})
+	});
+</script>
+{% endblock %}
+

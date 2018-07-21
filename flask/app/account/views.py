@@ -25,6 +25,7 @@ from app.account.forms import (
     RegistrationForm,
     RequestResetPasswordForm,
     ResetPasswordForm,
+    UpdateProfileForm,
 )
 from app.email import send_email
 from app.models import User
@@ -64,8 +65,10 @@ def register():
     form = RegistrationForm()
     if form.validate_on_submit():
         user = User(
-            first_name=form.first_name.data,
-            last_name=form.last_name.data,
+            # first_name=form.first_name.data,
+            # last_name=form.last_name.data,
+            username=form.username.data,
+            full_name=form.full_name.data,
             email=form.email.data,
             password=form.password.data)
         # try:
@@ -79,9 +82,9 @@ def register():
         #     content = ex.response.content
         #     if email_err not in content and username_err not in content:
         #         raise ex
-        username = "{}_{}".format(user.first_name.lower(), user.last_name.lower())
-        current_app.hypothesis_client.create_account(username, email=user.email,
-                                  display_name=user.email)
+        # username = "{}_{}".format(user.first_name.lower(), user.last_name.lower())
+        current_app.hypothesis_client.create_account(user.username, email=user.email,
+                                  display_name=user.full_name)
         db.session.add(user)
         db.session.commit()
         # token = user.generate_confirmation_token()
@@ -95,8 +98,11 @@ def register():
         #     confirm_link=confirm_link)
         # flash('A confirmation link has been sent to {}.'.format(user.email),
         #       'warning')
+
+        # Bypass email confirmation
         user.force_confirm_account()
-        return redirect(url_for('main.index'))
+        # return redirect(url_for('main.index'))
+        return redirect(url_for('account.manage'))
     return render_template('account/register.html', form=form)
 
 
@@ -113,7 +119,17 @@ def logout():
 @login_required
 def manage():
     """Display a user's account information."""
-    return render_template('account/manage.html', user=current_user, form=None)
+    form = UpdateProfileForm()
+    if current_user.bio:
+        form.bio.data = current_user.bio
+    if current_user.website:
+        form.website.data = current_user.website
+    if form.validate_on_submit():
+        current_user.bio = form.bio.data
+        current_user.website = form.website.data
+        db.session.add(current_user)
+        db.session.commit()
+    return render_template('account/manage.html', user=current_user, form=form)
 
 
 @account.route('/reset-password', methods=['GET', 'POST'])

@@ -1,11 +1,63 @@
 {% extends 'layouts/base.html' %}
 
 {% block content %}
-<div class="ui text container">
-	{% for oral_hist in data %}
-	<a href="{{ url_for('main.histories', hist_id=oral_hist.id)}}" >
-		<p>{{ oral_hist.fname }}</p>
-	</a>
-	{% endfor %}
-</div>
+    <div class="ui stackable grid container">
+        <div class="sixteen wide tablet twelve wide computer centered column">
+            <h2 class="ui header">
+                Oral Histories
+                <div class="sub header">
+                    Select an oral history to view the transcript and annotations.
+                </div>
+            </h2>
+
+            <div class="ui menu">
+                <div class="ui search item">
+                    <div class="ui transparent icon input">
+                        <input id="search-oral-histories" type="text" placeholder="Search users…">
+                        <i class="search icon"></i>
+                    </div>
+                </div>
+            </div>
+
+            {# Use overflow-x: scroll so that mobile views don't freak out
+             # when the table is too wide #}
+            <div style="overflow-x: scroll;">
+                <table class="ui searchable sortable unstackable selectable celled table">
+                    <thead>
+                        <tr>
+                            <th>Interviewee</th>
+                            <th>Filename</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for oral_hist in data %}
+                        <tr onclick="window.location.href = '{{ url_for('main.histories', hist_id=oral_hist.id) }}';">
+
+                            <td>{{ oral_hist.full_name }}</td>
+                            <td>{{ oral_hist.fname_base }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#search-oral-histories').keyup(function () {
+                var searchText = $(this).val();
+                if (searchText.length > 0) {
+                    $('tbody td:icontains(' + searchText + ')').addClass('positive');
+                    $('td.positive').not(':icontains(' + searchText + ')').removeClass('positive');
+                    $('tbody td').not(':icontains(' + searchText + ')').closest('tr').addClass('hidden').hide();
+                    $('tr.hidden:icontains(' + searchText + ')').removeClass('hidden').show();
+                } else {
+                    $('td.positive').removeClass('positive');
+                    $('tr.hidden').removeClass('hidden').show();
+                }
+            });
+
+        });
+    </script>
 {% endblock %}
