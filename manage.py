@@ -89,7 +89,11 @@ def setup_general():
             db.session.commit()
             print('Added administrator {}'.format(user.full_name))
 
-    OralHistory.insert_oral_histories()
+    try:
+        OralHistory.insert_oral_histories()
+        print("loaded oral histories")
+    except FileNotFoundError as e:
+        print("ERROR could not load oral histories -- {}".format(e))
 
 
 @manager.command
