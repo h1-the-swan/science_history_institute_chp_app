@@ -38,7 +38,15 @@ def histories(hist_id=None):
     hypothesis_api_url = service_url + '/api/'
     # hypothesis_username = "{}_{}".format(current_user.first_name.lower(), current_user.last_name.lower())
     hypothesis_grant_token = current_app.hypothesis_client.grant_token(username=current_user.username)
-    return render_template('main/display_oral_history.html', data=data, oral_hist=oral_hist, hypothesis_api_url=hypothesis_api_url, hypothesis_grant_token=hypothesis_grant_token.decode(), service_url=service_url)
+
+    # get embed.js from the hypothesis service
+    try:
+        from urllib.request import urlretrieve
+    except ImportError:
+        from urllib import urlretrieve
+    embedjs_fname = os.path.join(current_app.static_folder, "embed.js")
+    urlretrieve(os.environ['HYPOTHESIS_SERVICE'] + "/embed.js", embedjs_fname)
+    return render_template('main/display_oral_history.html', data=data, oral_hist=oral_hist, hypothesis_api_url=hypothesis_api_url, hypothesis_grant_token=hypothesis_grant_token.decode())
 
 @main.route('/_login_fake')
 def _login_fake():

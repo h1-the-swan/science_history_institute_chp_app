@@ -15,6 +15,7 @@
 	{% endfor %}
 </div>
 
+
   <script>
     {% autoescape false %}
       var hypothesisApiUrl = "{{ hypothesis_api_url }}";
@@ -27,5 +28,6 @@
     {% endif %}
   </script>
 <script src="{{ url_for('static', filename='hypothesisConfig.js') }}" async></script>
-<script src="{{ service_url }}/embed.js" async></script>
+{# <script src="{{ service_url }}/embed.js" async></script> #}
+<script src="{{ url_for('static', filename='embed.js') }}" async></script>
 {% endblock %}
