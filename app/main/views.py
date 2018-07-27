@@ -46,8 +46,7 @@ def histories(hist_id=None):
     #     from urllib import urlretrieve
     # embedjs_fname = os.path.join(current_app.static_folder, "embed.js")
     # urlretrieve(os.environ['HYPOTHESIS_SERVICE'] + "/embed.js", embedjs_fname)
-    settings = {"assetRoot": "http://localhost:3001/hypothesis", "sidebarAppUrl": service_url + "/app.html"}
-    return render_template('main/display_oral_history.html', data=data, oral_hist=oral_hist, hypothesis_api_url=hypothesis_api_url, hypothesis_grant_token=hypothesis_grant_token.decode(), settingsJson=json.dumps(settings))
+    return render_template('main/display_oral_history.html', data=data, oral_hist=oral_hist, hypothesis_api_url=hypothesis_api_url, hypothesis_grant_token=hypothesis_grant_token.decode(), service_url=service_url)
 
 @main.route('/_login_fake')
 def _login_fake():
