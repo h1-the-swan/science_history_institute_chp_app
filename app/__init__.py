@@ -31,8 +31,8 @@ login_manager.login_view = 'account.login'
 
 from app.hypothesis import HypothesisClient
 
-def create_app(config_name):
-    app = Flask(__name__)
+def create_app(config_name, url_prefix=""):
+    app = Flask(__name__, static_url_path=url_prefix+"/static")
     app.config.from_object(config[config_name])
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     # not using sqlalchemy event system, hence disabling it
@@ -82,15 +82,15 @@ def create_app(config_name):
 
     # Create app blueprints
     from .main import main as main_blueprint
-    app.register_blueprint(main_blueprint)
+    app.register_blueprint(main_blueprint, url_prefix=url_prefix)
 
     from .account import account as account_blueprint
-    app.register_blueprint(account_blueprint, url_prefix='/account')
+    app.register_blueprint(account_blueprint, url_prefix=url_prefix+'/account')
 
     from .admin import admin as admin_blueprint
-    app.register_blueprint(admin_blueprint, url_prefix='/admin')
+    app.register_blueprint(admin_blueprint, url_prefix=url_prefix+'/admin')
 
     from .experimental import experimental as experimental_blueprint
-    app.register_blueprint(experimental_blueprint, url_prefix='/experimental')
+    app.register_blueprint(experimental_blueprint, url_prefix=url_prefix+'/experimental')
 
     return app

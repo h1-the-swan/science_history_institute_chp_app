@@ -27,7 +27,9 @@
       var hypothesisGrantToken = null;
     {% endif %}
   </script>
+
+	<script class="js-hypothesis-config">{{ settingsJson|tojson }}</script>
 <script src="{{ url_for('static', filename='hypothesisConfig.js') }}" async></script>
-{# <script src="{{ service_url }}/embed.js" async></script> #}
-<script src="{{ url_for('static', filename='embed.js') }}" async></script>
+<script src="{{ service_url }}/embed.js" async></script>
+{# <script src="{{ url_for('static', filename='embed.js') }}" async></script> #}
 {% endblock %}

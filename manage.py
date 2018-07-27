@@ -11,7 +11,9 @@ from app import create_app, db
 from app.models import Role, User, OralHistory
 from config import Config
 
-app = create_app(os.getenv('FLASK_CONFIG') or 'default')
+URL_PREFIX = "/chp"
+app = create_app(os.getenv('FLASK_CONFIG') or 'default', url_prefix=URL_PREFIX)
+app.config['APPLICATION_ROOT'] = URL_PREFIX
 manager = Manager(app)
 migrate = Migrate(app, db)
 

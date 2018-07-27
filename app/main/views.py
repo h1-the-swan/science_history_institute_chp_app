@@ -1,5 +1,5 @@
 from __future__ import unicode_literals
-import os
+import os, json
 from flask import Blueprint, render_template, url_for, redirect, current_app, jsonify
 from flask_login import current_user, login_required
 
@@ -39,14 +39,15 @@ def histories(hist_id=None):
     # hypothesis_username = "{}_{}".format(current_user.first_name.lower(), current_user.last_name.lower())
     hypothesis_grant_token = current_app.hypothesis_client.grant_token(username=current_user.username)
 
-    # get embed.js from the hypothesis service
-    try:
-        from urllib.request import urlretrieve
-    except ImportError:
-        from urllib import urlretrieve
-    embedjs_fname = os.path.join(current_app.static_folder, "embed.js")
-    urlretrieve(os.environ['HYPOTHESIS_SERVICE'] + "/embed.js", embedjs_fname)
-    return render_template('main/display_oral_history.html', data=data, oral_hist=oral_hist, hypothesis_api_url=hypothesis_api_url, hypothesis_grant_token=hypothesis_grant_token.decode())
+    # # get embed.js from the hypothesis service
+    # try:
+    #     from urllib.request import urlretrieve
+    # except ImportError:
+    #     from urllib import urlretrieve
+    # embedjs_fname = os.path.join(current_app.static_folder, "embed.js")
+    # urlretrieve(os.environ['HYPOTHESIS_SERVICE'] + "/embed.js", embedjs_fname)
+    settings = {"assetRoot": "http://localhost:3001/hypothesis", "sidebarAppUrl": service_url + "/app.html"}
+    return render_template('main/display_oral_history.html', data=data, oral_hist=oral_hist, hypothesis_api_url=hypothesis_api_url, hypothesis_grant_token=hypothesis_grant_token.decode(), settingsJson=json.dumps(settings))
 
 @main.route('/_login_fake')
 def _login_fake():
