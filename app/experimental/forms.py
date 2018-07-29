@@ -1,5 +1,5 @@
 from flask import url_for
-from flask_wtf import Form
+from flask_wtf import FlaskForm
 from wtforms import ValidationError
 from wtforms import (
     BooleanField,
@@ -12,5 +12,5 @@ from wtforms import (
 from wtforms.fields.html5 import EmailField
 from wtforms.validators import Email, EqualTo, InputRequired, Length
 
-class SelectOralHistory(Form):
+class SelectOralHistory(FlaskForm):
     choice = SelectField(coerce=int)

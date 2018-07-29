@@ -1,5 +1,5 @@
 from flask import url_for
-from flask_wtf import Form
+from flask_wtf import FlaskForm
 from wtforms import ValidationError
 from wtforms import (
     BooleanField,
@@ -13,12 +13,12 @@ from wtforms.validators import Email, EqualTo, InputRequired, Length
 
 from app.models import User
 
-class UpdateProfileForm(Form):
+class UpdateProfileForm(FlaskForm):
     bio = TextAreaField('Bio', validators=[Length(0, 20000)])
     website = StringField('Personal Website', validators=[Length(0, 128)])
     submit = SubmitField('Update Profile')
 
-class LoginForm(Form):
+class LoginForm(FlaskForm):
     email = EmailField(
         'Email', validators=[InputRequired(),
                              Length(1, 128),
@@ -28,7 +28,7 @@ class LoginForm(Form):
     submit = SubmitField('Log in')
 
 
-class RegistrationForm(Form):
+class RegistrationForm(FlaskForm):
     # first_name = StringField(
     #     'First name', validators=[InputRequired(),
     #                               Length(1, 64)])
@@ -65,7 +65,7 @@ class RegistrationForm(Form):
             raise ValidationError('Username already taken!')
 
 
-class RequestResetPasswordForm(Form):
+class RequestResetPasswordForm(FlaskForm):
     email = EmailField(
         'Email', validators=[InputRequired(),
                              Length(1, 128),
@@ -76,7 +76,7 @@ class RequestResetPasswordForm(Form):
     # that an account with the given email exists.
 
 
-class ResetPasswordForm(Form):
+class ResetPasswordForm(FlaskForm):
     email = EmailField(
         'Email', validators=[InputRequired(),
                              Length(1, 128),
@@ -96,7 +96,7 @@ class ResetPasswordForm(Form):
             raise ValidationError('Unknown email address.')
 
 
-class CreatePasswordForm(Form):
+class CreatePasswordForm(FlaskForm):
     password = PasswordField(
         'Password',
         validators=[
@@ -108,7 +108,7 @@ class CreatePasswordForm(Form):
     submit = SubmitField('Set password')
 
 
-class ChangePasswordForm(Form):
+class ChangePasswordForm(FlaskForm):
     old_password = PasswordField('Old password', validators=[InputRequired()])
     new_password = PasswordField(
         'New password',
@@ -121,7 +121,7 @@ class ChangePasswordForm(Form):
     submit = SubmitField('Update password')
 
 
-class ChangeEmailForm(Form):
+class ChangeEmailForm(FlaskForm):
     email = EmailField(
         'New email', validators=[InputRequired(),
                                  Length(1, 128),
