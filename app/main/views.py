@@ -16,6 +16,7 @@ def index():
 
 
 @main.route('/about')
+@login_required
 def about():
     editable_html_obj = EditableHTML.get_editable_html('about')
     return render_template(

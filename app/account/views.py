@@ -101,8 +101,8 @@ def register():
 
         # Bypass email confirmation
         user.force_confirm_account()
-        # return redirect(url_for('main.index'))
-        return redirect(url_for('account.manage'))
+        return redirect(url_for('main.index'))
+        # return redirect(url_for('account.manage'))
     return render_template('account/register.html', form=form)
 
 
@@ -158,81 +158,85 @@ def reset_password_request():
     return render_template('account/reset_password.html', form=form)
 
 
-@account.route('/reset-password/<token>', methods=['GET', 'POST'])
-def reset_password(token):
-    """Reset an existing user's password."""
-    if not current_user.is_anonymous:
-        return redirect(url_for('main.index'))
-    form = ResetPasswordForm()
-    if form.validate_on_submit():
-        user = User.query.filter_by(email=form.email.data).first()
-        if user is None:
-            flash('Invalid email address.', 'form-error')
-            return redirect(url_for('main.index'))
-        if user.reset_password(token, form.new_password.data):
-            flash('Your password has been updated.', 'form-success')
-            return redirect(url_for('account.login'))
-        else:
-            flash('The password reset link is invalid or has expired.',
-                  'form-error')
-            return redirect(url_for('main.index'))
-    return render_template('account/reset_password.html', form=form)
-
-
+# @account.route('/reset-password/<token>', methods=['GET', 'POST'])
+# def reset_password(token):
+#     """Reset an existing user's password."""
+#     if not current_user.is_anonymous:
+#         return redirect(url_for('main.index'))
+#     form = ResetPasswordForm()
+#     if form.validate_on_submit():
+#         user = User.query.filter_by(email=form.email.data).first()
+#         if user is None:
+#             flash('Invalid email address.', 'form-error')
+#             return redirect(url_for('main.index'))
+#         if user.reset_password(token, form.new_password.data):
+#             flash('Your password has been updated.', 'form-success')
+#             return redirect(url_for('account.login'))
+#         else:
+#             flash('The password reset link is invalid or has expired.',
+#                   'form-error')
+#             return redirect(url_for('main.index'))
+#     return render_template('account/reset_password.html', form=form)
+#
+#
 @account.route('/manage/change-password', methods=['GET', 'POST'])
 @login_required
 def change_password():
-    """Change an existing user's password."""
-    form = ChangePasswordForm()
-    if form.validate_on_submit():
-        if current_user.verify_password(form.old_password.data):
-            current_user.password = form.new_password.data
-            db.session.add(current_user)
-            db.session.commit()
-            flash('Your password has been updated.', 'form-success')
-            return redirect(url_for('main.index'))
-        else:
-            flash('Original password is invalid.', 'form-error')
-    return render_template('account/manage.html', form=form)
-
-
+    flash('This feature is currently unavailable', 'error')
+    return redirect(url_for('account.manage'))
+#     """Change an existing user's password."""
+#     form = ChangePasswordForm()
+#     if form.validate_on_submit():
+#         if current_user.verify_password(form.old_password.data):
+#             current_user.password = form.new_password.data
+#             db.session.add(current_user)
+#             db.session.commit()
+#             flash('Your password has been updated.', 'form-success')
+#             return redirect(url_for('main.index'))
+#         else:
+#             flash('Original password is invalid.', 'form-error')
+#     return render_template('account/manage.html', form=form)
+#
+#
 @account.route('/manage/change-email', methods=['GET', 'POST'])
 @login_required
 def change_email_request():
-    """Respond to existing user's request to change their email."""
-    form = ChangeEmailForm()
-    if form.validate_on_submit():
-        if current_user.verify_password(form.password.data):
-            new_email = form.email.data
-            token = current_user.generate_email_change_token(new_email)
-            change_email_link = url_for(
-                'account.change_email', token=token, _external=True)
-            get_queue().enqueue(
-                send_email,
-                recipient=new_email,
-                subject='Confirm Your New Email',
-                template='account/email/change_email',
-                # current_user is a LocalProxy, we want the underlying user
-                # object
-                user=current_user._get_current_object(),
-                change_email_link=change_email_link)
-            flash('A confirmation link has been sent to {}.'.format(new_email),
-                  'warning')
-            return redirect(url_for('main.index'))
-        else:
-            flash('Invalid email or password.', 'form-error')
-    return render_template('account/manage.html', form=form)
-
-
-@account.route('/manage/change-email/<token>', methods=['GET', 'POST'])
-@login_required
-def change_email(token):
-    """Change existing user's email with provided token."""
-    if current_user.change_email(token):
-        flash('Your email address has been updated.', 'success')
-    else:
-        flash('The confirmation link is invalid or has expired.', 'error')
-    return redirect(url_for('main.index'))
+    flash('This feature is currently unavailable', 'error')
+    return redirect(url_for('account.manage'))
+    # """Respond to existing user's request to change their email."""
+    # form = ChangeEmailForm()
+    # if form.validate_on_submit():
+    #     if current_user.verify_password(form.password.data):
+    #         new_email = form.email.data
+    #         token = current_user.generate_email_change_token(new_email)
+    #         change_email_link = url_for(
+    #             'account.change_email', token=token, _external=True)
+    #         get_queue().enqueue(
+    #             send_email,
+    #             recipient=new_email,
+    #             subject='Confirm Your New Email',
+    #             template='account/email/change_email',
+    #             # current_user is a LocalProxy, we want the underlying user
+    #             # object
+    #             user=current_user._get_current_object(),
+    #             change_email_link=change_email_link)
+    #         flash('A confirmation link has been sent to {}.'.format(new_email),
+    #               'warning')
+    #         return redirect(url_for('main.index'))
+    #     else:
+    #         flash('Invalid email or password.', 'form-error')
+    # return render_template('account/manage.html', form=form)
+#
+#
+# @account.route('/manage/change-email/<token>', methods=['GET', 'POST'])
+# @login_required
+# def change_email(token):
+#     """Change existing user's email with provided token."""
+#     if current_user.change_email(token):
+#         flash('Your email address has been updated.', 'success')
+#     else:
+#         flash('The confirmation link is invalid or has expired.', 'error')
+#     return redirect(url_for('main.index'))
 
 
 @account.route('/confirm-account')
@@ -267,54 +271,54 @@ def confirm(token):
     return redirect(url_for('main.index'))
 
 
-@account.route(
-    '/join-from-invite/<int:user_id>/<token>', methods=['GET', 'POST'])
-def join_from_invite(user_id, token):
-    """
-    Confirm new user's account with provided token and prompt them to set
-    a password.
-    """
-    if current_user is not None and current_user.is_authenticated:
-        flash('You are already logged in.', 'error')
-        return redirect(url_for('main.index'))
-
-    new_user = User.query.get(user_id)
-    if new_user is None:
-        return redirect(404)
-
-    if new_user.password_hash is not None:
-        flash('You have already joined.', 'error')
-        return redirect(url_for('main.index'))
-
-    if new_user.confirm_account(token):
-        form = CreatePasswordForm()
-        if form.validate_on_submit():
-            new_user.password = form.password.data
-            db.session.add(new_user)
-            db.session.commit()
-            flash('Your password has been set. After you log in, you can '
-                  'go to the "Your Account" page to review your account '
-                  'information and settings.', 'success')
-            return redirect(url_for('account.login'))
-        return render_template('account/join_invite.html', form=form)
-    else:
-        flash('The confirmation link is invalid or has expired. Another '
-              'invite email with a new link has been sent to you.', 'error')
-        token = new_user.generate_confirmation_token()
-        invite_link = url_for(
-            'account.join_from_invite',
-            user_id=user_id,
-            token=token,
-            _external=True)
-        get_queue().enqueue(
-            send_email,
-            recipient=new_user.email,
-            subject='You Are Invited To Join',
-            template='account/email/invite',
-            user=new_user,
-            invite_link=invite_link)
-    return redirect(url_for('main.index'))
-
+# @account.route(
+#     '/join-from-invite/<int:user_id>/<token>', methods=['GET', 'POST'])
+# def join_from_invite(user_id, token):
+#     """
+#     Confirm new user's account with provided token and prompt them to set
+#     a password.
+#     """
+#     if current_user is not None and current_user.is_authenticated:
+#         flash('You are already logged in.', 'error')
+#         return redirect(url_for('main.index'))
+#
+#     new_user = User.query.get(user_id)
+#     if new_user is None:
+#         return redirect(404)
+#
+#     if new_user.password_hash is not None:
+#         flash('You have already joined.', 'error')
+#         return redirect(url_for('main.index'))
+#
+#     if new_user.confirm_account(token):
+#         form = CreatePasswordForm()
+#         if form.validate_on_submit():
+#             new_user.password = form.password.data
+#             db.session.add(new_user)
+#             db.session.commit()
+#             flash('Your password has been set. After you log in, you can '
+#                   'go to the "Your Account" page to review your account '
+#                   'information and settings.', 'success')
+#             return redirect(url_for('account.login'))
+#         return render_template('account/join_invite.html', form=form)
+#     else:
+#         flash('The confirmation link is invalid or has expired. Another '
+#               'invite email with a new link has been sent to you.', 'error')
+#         token = new_user.generate_confirmation_token()
+#         invite_link = url_for(
+#             'account.join_from_invite',
+#             user_id=user_id,
+#             token=token,
+#             _external=True)
+#         get_queue().enqueue(
+#             send_email,
+#             recipient=new_user.email,
+#             subject='You Are Invited To Join',
+#             template='account/email/invite',
+#             user=new_user,
+#             invite_link=invite_link)
+#     return redirect(url_for('main.index'))
+#
 
 @account.before_app_request
 def before_request():

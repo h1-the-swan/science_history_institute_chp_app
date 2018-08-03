@@ -14,6 +14,7 @@ def full_name(oral_history):
     return "{} {}".format(oral_history.first_name, oral_history.last_name)
 
 @experimental.route('/wikipedia', methods=['GET', 'POST'])
+@login_required
 def wikipedia():
     # data = search_wikipedia('Julia Levy')
     data = []
