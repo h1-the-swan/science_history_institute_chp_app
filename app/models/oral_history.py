@@ -3,7 +3,7 @@ from app import db, basedir
 class OralHistory(db.Model):
     __tablename__ = 'oral_histories'
     id = db.Column(db.Integer, primary_key=True)
-    fname = db.Column(db.Text)
+    # fname = db.Column(db.Text)
     fname_base = db.Column(db.Text)
     full_name = db.Column(db.String(64))
     first_name = db.Column(db.String(32))
@@ -20,8 +20,8 @@ class OralHistory(db.Model):
     def insert_oral_histories():
         from app.load_oral_histories import load_oral_histories_fnames
         for r in load_oral_histories_fnames():
-            oral_hist = OralHistory(fname=r['fname'],
-                                    fname_base=r['fname_base'],
+            # oral_hist = OralHistory(fname=r['fname'],
+            oral_hist = OralHistory(fname_base=r['fname_base'],
                                     full_name=r['interviewee_full_name'],
                                     first_name=r['interviewee_first_name'],
                                     last_name=r['interviewee_last_name'])
