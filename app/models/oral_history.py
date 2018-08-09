@@ -1,3 +1,4 @@
+from flask import url_for
 from app import db
 
 class OralHistory(db.Model):
@@ -34,4 +35,5 @@ class OralHistory(db.Model):
 
         """
         from docx import Document
-        return Document(self.fname)
+        # return Document(self.fname)
+        return Document(url_for('static', filename="LSF_oral_histories/{}".format(self.fname_base)))
