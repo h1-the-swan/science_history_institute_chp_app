@@ -1,5 +1,4 @@
-from flask import url_for
-from app import db
+from app import db, basedir
 
 class OralHistory(db.Model):
     __tablename__ = 'oral_histories'
@@ -36,4 +35,4 @@ class OralHistory(db.Model):
         """
         from docx import Document
         # return Document(self.fname)
-        return Document(url_for('static', filename="LSF_oral_histories/{}".format(self.fname_base)))
+        return Document("{}/static/LSF_oral_histories/{}".format(basedir, self.fname_base)))
