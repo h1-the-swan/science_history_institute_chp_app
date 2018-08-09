@@ -35,4 +35,4 @@ class OralHistory(db.Model):
         """
         from docx import Document
         # return Document(self.fname)
-        return Document("{}/static/LSF_oral_histories/{}".format(basedir, self.fname_base)))
+        return Document("{}/static/LSF_oral_histories/{}".format(basedir, self.fname_base))
