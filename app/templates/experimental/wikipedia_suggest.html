@@ -1,0 +1,93 @@
+{% extends 'layouts/base.html' %}
+
+{% block content %}
+    <div class="ui stackable grid container">
+        <div class="sixteen wide tablet twelve wide computer centered column">
+            <h2 class="ui header">
+							Wikipedia suggestions
+            </h2>
+
+            <div class="ui menu">
+                <div class="ui search item">
+                    <div class="ui transparent icon input">
+                        <input id="search-wikipedia-suggest" type="text" placeholder="Search…">
+                        <i class="search icon"></i>
+                    </div>
+                </div>
+            </div>
+
+            {# Use overflow-x: scroll so that mobile views don't freak out
+             # when the table is too wide #}
+            <div style="overflow-x: scroll;">
+                <table class="ui searchable sortable unstackable selectable celled table">
+                    <thead>
+                        <tr>
+                            <th>Entity Name</th>
+                            <th>Wikipedia page title</th>
+                            <th>Confirmed</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for item in wss %}
+												<tr>
+
+                            <td>{{ item.entity.name }}</td>
+                            <td><a href="http://en.wikipedia.org/wiki/{{ item.wikipedia_page_title}}" target="_blank">{{ item.wikipedia_page_title }}</a></td>
+														<td>
+															<input type="checkbox" name="confirmed" 
+														  data-id="{{item.id}}"
+														  {% if item.confirmed==True %}
+															checked
+														  {% endif %} 
+															class="ws-confirmed">
+														</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#search-wikipedia-suggest').keyup(function () {
+                var searchText = $(this).val();
+                if (searchText.length > 0) {
+                    $('tbody td:icontains(' + searchText + ')').addClass('positive');
+                    $('td.positive').not(':icontains(' + searchText + ')').removeClass('positive');
+                    $('tbody td').not(':icontains(' + searchText + ')').closest('tr').addClass('hidden').hide();
+                    $('tr.hidden:icontains(' + searchText + ')').removeClass('hidden').show();
+                } else {
+                    $('td.positive').removeClass('positive');
+                    $('tr.hidden').removeClass('hidden').show();
+                }
+            });
+
+
+						$('.ws-confirmed').change(function(event) {
+							var checkbox = event.target;
+							console.log(checkbox);
+							console.log(checkbox.dataset.id);
+							$.ajax({
+								url: '{{ url_for("experimental.wikipedia_suggest_change_confirm") }}',
+								type: 'POST',
+								dataType: 'json',
+								headers: {
+									'X-CSRF-Token': '{{ csrf_token() }}'
+								},
+								data: {wikipedia_suggest_id: checkbox.dataset.id,
+									checked: checkbox.checked},
+								error: function (jqXHR, textStatus, errorThrown) {
+									console.log(jqXHR);
+									console.log(textStatus);
+									console.log(errorThrown);
+								},
+							});
+						});
+
+        });
+
+    </script>
+{% endblock %}
+

@@ -15,6 +15,7 @@ class WikipediaSuggest(db.Model):
     entity_id = db.Column(db.Integer)
     wikipedia_page_id = db.Column(db.BigInteger)
     wikipedia_page_title = db.Column(db.String(128))
+    confirmed = db.Column(db.Boolean, default=False)
 
     entity = db.relationship('Entity', foreign_keys=[entity_id], primaryjoin='Entity.id == WikipediaSuggest.entity_id', backref='wikipedia_suggest', uselist=False, lazy=True)
 

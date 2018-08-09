@@ -5,17 +5,47 @@
 <div class="ui text container">
 	{{ f.render_form(form, extra_classes='name_select_form') }}
 	{% for item in data %}
-	<p>{{ item }}</p>
+	<p><a href="http://en.wikipedia.org/wiki/{{ item.title }}" target="_blank">{{ item.title }}</a></p>
+	<p>{{ item.snippet }}</p>
+															<input type="checkbox" name="confirmed" 
+														  data-pageid="{{item.pageid}}"
+														  data-pagetitle="{{item.title}}"
+															class="ws-confirmed">
 	{% endfor %}
 </div>
 <script type="text/javascript" charset="utf-8">
 	$( document ).ready(function() {
-		console.log('asdf');
 		console.log($('.name_select_form select'));
+		// Submit form immediately on change
 		$('.name_select_form select').change(function() {
 			// $(this).closest('form').trigger('submit');
 			$(this).closest('form').submit();
 		})
+
+						$('.ws-confirmed').change(function(event) {
+							var checkbox = event.target;
+							console.log(checkbox);
+							console.log(checkbox.dataset.id);
+							$.ajax({
+								url: '{{ url_for("experimental.wikipedia_change_confirm") }}',
+								type: 'POST',
+								dataType: 'json',
+								headers: {
+									'X-CSRF-Token': '{{ csrf_token() }}'
+								},
+								data: {
+									oh_id: '{{ oh_id }}',
+									checked: checkbox.checked,
+									wikipedia_page_id: checkbox.dataset.pageid,
+									wikipedia_page_title: checkbox.dataset.pagetitle,
+								},
+								error: function (jqXHR, textStatus, errorThrown) {
+									console.log(jqXHR);
+									console.log(textStatus);
+									console.log(errorThrown);
+								},
+							});
+						});
 	});
 </script>
 {% endblock %}
