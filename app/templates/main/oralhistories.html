@@ -22,19 +22,25 @@
             {# Use overflow-x: scroll so that mobile views don't freak out
              # when the table is too wide #}
             <div style="overflow-x: scroll;">
-                <table class="ui searchable sortable unstackable selectable celled table">
+                <table id="oral-histories-table" class="ui searchable sortable unstackable selectable celled table">
                     <thead>
                         <tr>
                             <th>Interviewee</th>
                             <th>Filename</th>
+                            <th>Total Annotations</th>
+                            <th>Your Annotations</th>
                         </tr>
                     </thead>
                     <tbody>
                     {% for oral_hist in data %}
-                        <tr onclick="window.location.href = '{{ url_for('main.histories', hist_id=oral_hist.id) }}';">
+                        <tr data-id="{{ oral_hist.id }}" onclick="window.location.href = '{{ url_for('main.histories', hist_id=oral_hist.id) }}';">
 
                             <td>{{ oral_hist.full_name }}</td>
                             <td>{{ oral_hist.fname_base }}</td>
+														<td class="total-annotation">...</td>
+														<td class="your-annotation">...</td>
+														
+														
                         </tr>
                     {% endfor %}
                     </tbody>
@@ -58,6 +64,64 @@
                 }
             });
 
+			var api_url = "{{ hypothesis_api_url }}";
+			var hypothesis_username = "{{ hypothesis_username }}";
+			$('#oral-histories-table tr').each(function() {
+				$this = $(this);
+				var hist_id = $this.data('id');
+				if (typeof hist_id !== 'undefined') {
+					var page_url = Flask.url_for("main.histories", {"hist_id": hist_id, "_external": true});
+					var $cellToUpdate = $this.find('td.total-annotation');
+					updateTotalAnnotations(page_url, api_url, $cellToUpdate);
+
+					var $cellToUpdate = $this.find('td.your-annotation');
+					updateYourAnnotations(page_url, api_url, hypothesis_username, $cellToUpdate);
+				}
+			});
+
         });
+
+		function updateTotalAnnotations(page_url, api_url, $cellToUpdate) {
+			$.ajax({
+				url: api_url + 'search',
+				type: 'GET',
+				dataType: 'json',
+				data: $.param({
+					'uri': page_url,
+					'limit': 0,
+				}),
+				complete: function (jqXHR, textStatus) {
+					// callback
+				},
+				success: function (data, textStatus, jqXHR) {
+					$cellToUpdate.text(data.total);
+				},
+				error: function (jqXHR, textStatus, errorThrown) {
+					console.log(errorThrown);
+				}
+			});
+		}
+
+		function updateYourAnnotations(page_url, api_url, hypothesis_username, $cellToUpdate) {
+			$.ajax({
+				url: api_url + 'search',
+				type: 'GET',
+				dataType: 'json',
+				data: $.param({
+					'uri': page_url,
+					'user': hypothesis_username,
+					'limit': 0,
+				}),
+				complete: function (jqXHR, textStatus) {
+					// callback
+				},
+				success: function (data, textStatus, jqXHR) {
+					$cellToUpdate.text(data.total);
+				},
+				error: function (jqXHR, textStatus, errorThrown) {
+					console.log(errorThrown);
+				}
+			});
+		}
     </script>
 {% endblock %}

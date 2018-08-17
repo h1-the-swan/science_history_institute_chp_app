@@ -10,6 +10,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import CSRFProtect
 # from flask_admin import Admin
 # from flask_admin.contrib.sqla import ModelView
+from flask_jsglue import JSGlue
 
 from app.assets import app_css, app_js, vendor_css, vendor_js
 from config import config
@@ -21,6 +22,7 @@ db = SQLAlchemy()
 csrf = CSRFProtect()
 compress = Compress()
 # admin = Admin()
+jsglue = JSGlue()
 
 # Set up Flask-Login
 login_manager = LoginManager()
@@ -50,6 +52,7 @@ def create_app(config_name, url_prefix=""):
     # admin.init_app(app)
     # admin.add_view(ModelView(User, db.session))
     # admin.add_view(ModelView(OralHistory, db.session))
+    jsglue.init_app(app)
 
     # Register Jinja template functions
     from .utils import register_template_utils

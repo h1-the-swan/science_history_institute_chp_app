@@ -26,17 +26,18 @@ def about():
 @main.route('/histories/<hist_id>')
 @login_required
 def histories(hist_id=None):
+    service_url = current_app.hypothesis_client.service
+    # hypothesis_api_url = "https://hypothes.is/api/"
+    hypothesis_api_url = service_url + '/api/'
+    hypothesis_username = "acct:{username}@{authority}".format(username=current_user.username, authority=os.environ.get('HYPOTHESIS_AUTHORITY'))
     if hist_id is None:
         data = OralHistory.query.all()
-        return render_template('main/oralhistories.html', data=data)
+        return render_template('main/oralhistories.html', data=data, hypothesis_api_url=hypothesis_api_url, hypothesis_username=hypothesis_username)
 
     oral_hist = OralHistory.query.get(hist_id)
     document = oral_hist.parse()
     # data = [p.text for p in document.paragraphs]
     data = preprocess_oral_history(document)
-    service_url = current_app.hypothesis_client.service
-    # hypothesis_api_url = "https://hypothes.is/api/"
-    hypothesis_api_url = service_url + '/api/'
     # hypothesis_username = "{}_{}".format(current_user.first_name.lower(), current_user.last_name.lower())
     hypothesis_grant_token = current_app.hypothesis_client.grant_token(username=current_user.username)
 
