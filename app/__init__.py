@@ -10,7 +10,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import CSRFProtect
 # from flask_admin import Admin
 # from flask_admin.contrib.sqla import ModelView
-from flask_jsglue import JSGlue
+# from flask_jsglue import JSGlue
 
 from app.assets import app_css, app_js, vendor_css, vendor_js
 from config import config
@@ -22,7 +22,7 @@ db = SQLAlchemy()
 csrf = CSRFProtect()
 compress = Compress()
 # admin = Admin()
-jsglue = JSGlue()
+# jsglue = JSGlue()
 
 # Set up Flask-Login
 login_manager = LoginManager()
@@ -34,7 +34,7 @@ login_manager.login_view = 'account.login'
 from app.hypothesis import HypothesisClient
 
 def create_app(config_name, url_prefix=""):
-    app = Flask(__name__, static_url_path=url_prefix+"/static")
+    app = Flask(__name__, static_url_path=url_prefix+"/static", subdomain_matching=True)
     app.config.from_object(config[config_name])
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     # not using sqlalchemy event system, hence disabling it
@@ -52,7 +52,7 @@ def create_app(config_name, url_prefix=""):
     # admin.init_app(app)
     # admin.add_view(ModelView(User, db.session))
     # admin.add_view(ModelView(OralHistory, db.session))
-    jsglue.init_app(app)
+    # jsglue.init_app(app, url_prefix=url_prefix)
 
     # Register Jinja template functions
     from .utils import register_template_utils

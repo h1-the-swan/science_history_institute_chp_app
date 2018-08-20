@@ -32,7 +32,8 @@ def histories(hist_id=None):
     hypothesis_username = "acct:{username}@{authority}".format(username=current_user.username, authority=os.environ.get('HYPOTHESIS_AUTHORITY'))
     if hist_id is None:
         data = OralHistory.query.all()
-        return render_template('main/oralhistories.html', data=data, hypothesis_api_url=hypothesis_api_url, hypothesis_username=hypothesis_username)
+        histories_base_url = url_for("main.histories", _external=True)
+        return render_template('main/oralhistories.html', data=data, hypothesis_api_url=hypothesis_api_url, hypothesis_username=hypothesis_username, histories_base_url=histories_base_url)
 
     oral_hist = OralHistory.query.get(hist_id)
     document = oral_hist.parse()

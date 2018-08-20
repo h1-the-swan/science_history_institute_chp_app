@@ -70,7 +70,8 @@
 				$this = $(this);
 				var hist_id = $this.data('id');
 				if (typeof hist_id !== 'undefined') {
-					var page_url = Flask.url_for("main.histories", {"hist_id": hist_id, "_external": true});
+					// var page_url = Flask.url_for("main.histories", {"hist_id": hist_id, "_external": true});
+					var page_url = "{{ histories_base_url }}/" + hist_id;
 					var $cellToUpdate = $this.find('td.total-annotation');
 					updateTotalAnnotations(page_url, api_url, $cellToUpdate);
 

@@ -3,7 +3,8 @@
 <!DOCTYPE html>
 <html>
     <head>
-				{{ JSGlue.include() }}
+			  {# JSGLUE IS MORE TROUBLE THAN IT'S WORTH #}
+				{# {{ JSGlue.include() }} #}
         {% include 'partials/_head.html' %}
         {# Any templates that extend this template can set custom_head_tags to add scripts to their page #}
         {% block custom_head_tags %}{% endblock %}
