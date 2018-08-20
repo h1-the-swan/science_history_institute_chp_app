@@ -19,10 +19,14 @@ class UpdateProfileForm(FlaskForm):
     submit = SubmitField('Update Profile')
 
 class LoginForm(FlaskForm):
-    email = EmailField(
-        'Email', validators=[InputRequired(),
+    # email = EmailField(
+    #     'Email or username', validators=[InputRequired(),
+    #                          Length(1, 128),
+    #                          Email()])
+    email = StringField(
+        'Email or username', validators=[InputRequired(),
                              Length(1, 128),
-                             Email()])
+                             ])
     password = PasswordField('Password', validators=[InputRequired()])
     remember_me = BooleanField('Keep me logged in')
     submit = SubmitField('Log in')
