@@ -7,6 +7,7 @@ from flask import (
     request,
     url_for,
     current_app,
+    abort,
 )
 from flask_login import (
     current_user,
@@ -27,7 +28,7 @@ from app.account.forms import (
     ResetPasswordForm,
     UpdateProfileForm,
 )
-from app.email import send_email
+# from app.email import send_email
 from app.models import User
 
 from requests.exceptions import HTTPError
@@ -145,14 +146,14 @@ def reset_password_request():
             token = user.generate_password_reset_token()
             reset_link = url_for(
                 'account.reset_password', token=token, _external=True)
-            get_queue().enqueue(
-                send_email,
-                recipient=user.email,
-                subject='Reset Your Password',
-                template='account/email/reset_password',
-                user=user,
-                reset_link=reset_link,
-                next=request.args.get('next'))
+            # get_queue().enqueue(
+            #     send_email,
+            #     recipient=user.email,
+            #     subject='Reset Your Password',
+            #     template='account/email/reset_password',
+            #     user=user,
+            #     reset_link=reset_link,
+            #     next=request.args.get('next'))
         flash('A password reset link has been sent to {}.'.format(
             form.email.data), 'warning')
         return redirect(url_for('account.login'))
@@ -246,14 +247,14 @@ def confirm_request():
     """Respond to new user's request to confirm their account."""
     token = current_user.generate_confirmation_token()
     confirm_link = url_for('account.confirm', token=token, _external=True)
-    get_queue().enqueue(
-        send_email,
-        recipient=current_user.email,
-        subject='Confirm Your Account',
-        template='account/email/confirm',
-        # current_user is a LocalProxy, we want the underlying user object
-        user=current_user._get_current_object(),
-        confirm_link=confirm_link)
+    # get_queue().enqueue(
+    #     send_email,
+    #     recipient=current_user.email,
+    #     subject='Confirm Your Account',
+    #     template='account/email/confirm',
+    #     # current_user is a LocalProxy, we want the underlying user object
+    #     user=current_user._get_current_object(),
+    #     confirm_link=confirm_link)
     flash('A new confirmation link has been sent to {}.'.format(
         current_user.email), 'warning')
     return redirect(url_for('main.index'))
