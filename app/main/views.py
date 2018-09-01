@@ -38,7 +38,7 @@ def histories(hist_id=None):
     oral_hist = OralHistory.query.get(hist_id)
     document = oral_hist.parse()
     # data = [p.text for p in document.paragraphs]
-    data = preprocess_oral_history(document)
+    data = preprocess_oral_history([p.text for p in document.paragraphs])
     # hypothesis_username = "{}_{}".format(current_user.first_name.lower(), current_user.last_name.lower())
     hypothesis_grant_token = current_app.hypothesis_client.grant_token(username=current_user.username)
 

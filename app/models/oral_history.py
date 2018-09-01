@@ -1,4 +1,6 @@
 from app import db, basedir
+import tempfile
+import boto3
 
 class OralHistory(db.Model):
     __tablename__ = 'oral_histories'
@@ -34,5 +36,12 @@ class OralHistory(db.Model):
 
         """
         from docx import Document
-        # return Document(self.fname)
-        return Document("{}/static/LSF_oral_histories/{}".format(basedir, self.fname_base))
+        # fname = "{}/static/LSF_oral_histories/{}".format(basedir, self.fname_base)
+        # with open(fname, 'rb') as f:
+        #     return Document(f)
+        s3 = boto3.resource('s3')
+        bucket = s3.Bucket('datalab-projects')
+        with tempfile.NamedTemporaryFile(mode='wb') as f:
+            s3_path = "science-history-institute/LSF_oral_histories/{}".format(self.fname_base)
+            bucket.download_fileobj(s3_path, f)
+            return Document(f.name)
