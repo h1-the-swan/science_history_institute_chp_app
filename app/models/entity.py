@@ -19,3 +19,7 @@ class WikipediaSuggest(db.Model):
 
     entity = db.relationship('Entity', foreign_keys=[entity_id], primaryjoin='Entity.id == WikipediaSuggest.entity_id', backref='wikipedia_suggest', uselist=False, lazy=True)
 
+    @property
+    def wikipedia_url(self):
+        return "https://en.wikipedia.org/wiki/{}".format(self.wikipedia_page_title)
+
