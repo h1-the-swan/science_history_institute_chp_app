@@ -11,8 +11,7 @@ main = Blueprint('main', __name__)
 
 @main.route('/')
 def index():
-    # return render_template('main/index.html')
-    return redirect(url_for('main.histories'))
+    return render_template('main/index.html')
 
 
 @main.route('/about')

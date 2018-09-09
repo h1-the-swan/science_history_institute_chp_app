@@ -2,8 +2,14 @@
 
 {% block content %}
     <div class="ui text container">
-      <h1>Hello {% if not (current_user.is_authenticated) %} world {% else %} {{ current_user.full_name() }} {% endif %},</h1>
+      <h1>Welcome to the Science History Institute Community History Platform</h1>
 
-        <p>{{ lipsum(6) }}</p>
+        <p>
+					The goal of the <a href="https://www.sciencehistory.org/" target="_blank">Science History Institute</a> Community History Platform is to facilitate a community effort to construct the history of the biotech industry in the Bay Area.
+				</p>
+
+				<p>
+					<a href="{{ url_for('main.histories') }}" >Browse and annotate the oral histories</a>
+				</p>
     </div>
 {% endblock %}
