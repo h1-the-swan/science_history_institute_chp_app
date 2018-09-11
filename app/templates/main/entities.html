@@ -1,0 +1,71 @@
+{% extends 'layouts/base.html' %}
+
+{% block content %}
+    <div class="ui stackable grid container">
+        <div class="sixteen wide tablet twelve wide computer centered column">
+            <h2 class="ui header">
+							Entities
+                <div class="sub header">
+									Entities
+                </div>
+            </h2>
+
+            <div class="ui menu">
+                <div class="ui search item">
+                    <div class="ui transparent icon input">
+                        <input id="search-entities" type="text" placeholder="Search entities…">
+                        <i class="search icon"></i>
+                    </div>
+                </div>
+            </div>
+
+            {# Use overflow-x: scroll so that mobile views don't freak out
+             # when the table is too wide #}
+            <div style="overflow-x: scroll;">
+                <table id="oral-histories-table" class="ui searchable sortable unstackable selectable celled table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Description</th>
+                            <th>Wikipedia</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for entity in entities %}
+                        {# <tr data-id="{{ oral_hist.id }}" onclick="window.location.href = '{{ url_for('main.histories', hist_id=oral_hist.id) }}';"> #}
+                        <tr data-id="{{ entity.id }}">
+
+                            <td>{{ entity.name }}</td>
+                            <td>{{ entity.description }}</td>
+														<td>
+															{% if entity.wikipedia_suggest %}
+															<a href="{{ entity.wikipedia_suggest[0].wikipedia_url }}" target="_blank"><img src="https://upload.wikimedia.org/wikipedia/commons/b/b0/Wikipedia-favicon.png" alt="wikipedia icon"/></a>
+															{% endif %}
+														</td>
+														
+														
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#search-entities').keyup(function () {
+                var searchText = $(this).val();
+                if (searchText.length > 0) {
+                    $('tbody td:icontains(' + searchText + ')').addClass('positive');
+                    $('td.positive').not(':icontains(' + searchText + ')').removeClass('positive');
+                    $('tbody td').not(':icontains(' + searchText + ')').closest('tr').addClass('hidden').hide();
+                    $('tr.hidden:icontains(' + searchText + ')').removeClass('hidden').show();
+                } else {
+                    $('td.positive').removeClass('positive');
+                    $('tr.hidden').removeClass('hidden').show();
+                }
+            });
+
+    </script>
+{% endblock %}

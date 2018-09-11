@@ -3,7 +3,7 @@ import os, json
 from flask import Blueprint, render_template, url_for, redirect, current_app, jsonify
 from flask_login import current_user, login_required
 
-from app.models import EditableHTML, OralHistory
+from app.models import EditableHTML, OralHistory, Entity, WikipediaSuggest
 from app.load_oral_histories import preprocess_oral_history
 
 main = Blueprint('main', __name__)
@@ -49,6 +49,12 @@ def histories(hist_id=None):
     # embedjs_fname = os.path.join(current_app.static_folder, "embed.js")
     # urlretrieve(os.environ['HYPOTHESIS_SERVICE'] + "/embed.js", embedjs_fname)
     return render_template('main/display_oral_history.html', data=data, oral_hist=oral_hist, hypothesis_api_url=hypothesis_api_url, hypothesis_grant_token=hypothesis_grant_token.decode(), service_url=service_url)
+
+@main.route('/entities')
+@login_required
+def entities():
+    entities = Entity.query.all()
+    return render_template('main/entities.html', entities=entities)
 
 @main.route('/_login_fake')
 def _login_fake():

@@ -5,10 +5,10 @@ from flask import Blueprint, render_template, url_for, redirect, current_app, js
 from flask_login import current_user, login_required
 
 from app import db
-from app.models import EditableHTML, OralHistory, WikipediaSuggest
+from app.models import EditableHTML, OralHistory, WikipediaSuggest, Entity
 from app.wikipedia import search_wikipedia
 
-from app.experimental.forms import SelectOralHistory
+from app.experimental.forms import SelectOralHistory, AddNewEntityForm
 
 experimental = Blueprint('experimental', __name__)
 
@@ -75,3 +75,31 @@ def wikipedia_suggest_change_confirm():
     db.session.add(ws)
     db.session.commit()
     return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
+
+@experimental.route('/add_new_entity', methods=['GET', 'POST'])
+@login_required
+def add_new_entity():
+    form = AddNewEntityForm()
+    if form.validate_on_submit():
+        if Entity.query.filter_by(name=form.name.data).one_or_none():
+            flash('entity with that name already exists', 'error')
+        else:
+            entity = Entity(name=form.name.data, description=form.description.data)
+            db.session.add(entity)
+            db.session.flush()
+            entity_id = entity.id
+            entity_name = entity.name
+            wikipedia_page_title = form.wikipedia_page_title.data
+            # if the user entered a url, just get the page title
+            if wikipedia_page_title.startswith('http'):
+                wikipedia_page_title = wikipedia_page_title.split('/')[-1]
+            ws = WikipediaSuggest(entity_id=entity_id, wikipedia_page_title=wikipedia_page_title, confirmed=True)
+            db.session.add(ws)
+            db.session.commit()
+            flash('added entity {} (id {})'.format(entity_name, entity_id), 'info')
+    return render_template('experimental/add_new_entity.html', form=form)
+
+@experimental.route('/scratch')
+def scratch():
+    data = WikipediaSuggest.query.all()
+    return render_template('experimental/scratch.html', data=data)
