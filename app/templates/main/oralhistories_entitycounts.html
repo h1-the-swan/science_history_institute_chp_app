@@ -1,6 +1,9 @@
 {% extends 'layouts/base.html' %}
+{% import 'macros/form_macros.html' as f %}
+
 
 {% block content %}
+	{{ f.render_form(form, extra_classes='name_select_form') }}
     <div class="ui stackable grid container">
         <div class="sixteen wide tablet twelve wide computer centered column">
             <h2 class="ui header">
@@ -27,27 +30,22 @@
                         <tr>
                             <th>Interviewee</th>
                             <th>Filename</th>
-                            <th>Total Annotations</th>
-                            <th>Your Annotations</th>
-                            <th>Wikipedia</th>
+														<th>Mentions of {{ entity.name }}</th>
                         </tr>
                     </thead>
                     <tbody>
                     {% for oral_hist in data %}
-                        <tr data-id="{{ oral_hist.id }}" onclick="window.location.href = '{{ url_for('main.histories', hist_id=oral_hist.id) }}';">
+										{% if mentions_data[oral_hist.id] %}
+											
+                        <tr data-id="{{ oral_hist.id }}" onclick="window.location.href = '{{ url_for('main.histories', hist_id=oral_hist.id, mark=entity.name) }}';">
 
                             <td>{{ oral_hist.full_name }}</td>
                             <td>{{ oral_hist.fname_base }}</td>
-														<td class="total-annotation">...</td>
-														<td class="your-annotation">...</td>
-														<td>
-															{% if oral_hist.entity.wikipedia_suggest %}
-															<a href="{{ oral_hist.entity.wikipedia_suggest[0].wikipedia_url }}" target="_blank"><img src="https://upload.wikimedia.org/wikipedia/commons/b/b0/Wikipedia-favicon.png" alt="wikipedia icon"/></a>
-															{% endif %}
-														</td>
+                            <td>{{ mentions_data[oral_hist.id] }}</td>
 														
 														
                         </tr>
+										{% endif %}
                     {% endfor %}
                     </tbody>
                 </table>
@@ -57,6 +55,11 @@
 
     <script type="text/javascript">
         $(document).ready(function () {
+			$('.name_select_form select').change(function() {
+				// $(this).closest('form').trigger('submit');
+				$(this).closest('form').submit();
+			});
+
             $('#search-oral-histories').keyup(function () {
                 var searchText = $(this).val();
                 if (searchText.length > 0) {

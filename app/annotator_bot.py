@@ -146,20 +146,24 @@ def test(args):
     # print(r.json())
     # print()
 
-    annotation_id = "jAKRAK05Eeiw5rO44INx4g"
-    r = bot._make_api_request('PATCH', api_service="/annotations/{}".format(annotation_id), json={"hidden": True})
-    print(r)
-    print(r.json())
-    print()
+    # annotation_id = "jAKRAK05Eeiw5rO44INx4g"
+    # r = bot._make_api_request('PATCH', api_service="/annotations/{}".format(annotation_id), json={"hidden": True})
+    # print(r)
+    # print(r.json())
+    # print()
 
     r = bot.get_my_annotations()
     j = r.json()
     rows = j['rows']
+    c = 0
     for row in rows:
-        print(row['id'], row['text'])
+        r = bot.delete_by_id(row['id'])
+        c += 1
+        # print(row['id'], row['text'])
         # for k, v in row.items():
         #     if k != "target":
         #         print(k, v)
+    logger.info("deleted {} annotations".format(c))
 
     ctx.pop()
 
