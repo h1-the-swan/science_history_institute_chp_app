@@ -92,6 +92,7 @@ def histories_entitycounts(entity_id):
     for e in entities:
         if e.id in entities_with_mentions:
             form.choice.choices.append((e.id, e.name))
+    # sort alphabetically by name
     form.choice.choices.sort(key=lambda x: x[1])
     if form.validate_on_submit():
         selected_entity_id = form.choice.data

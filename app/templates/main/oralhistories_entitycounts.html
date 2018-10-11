@@ -3,8 +3,8 @@
 
 
 {% block content %}
-	{{ f.render_form(form, extra_classes='name_select_form') }}
     <div class="ui stackable grid container">
+		{{ f.render_form(form, extra_classes='name_select_form') }}
         <div class="sixteen wide tablet twelve wide computer centered column">
             <h2 class="ui header">
                 Oral Histories
@@ -55,7 +55,15 @@
 
     <script type="text/javascript">
         $(document).ready(function () {
-			$('.name_select_form select').change(function() {
+
+			var entity_id = "{{ entity.id }}";
+			var $select = $('.name_select_form select');
+			// $select.val("153");
+			// The above doesn't seem to work with Semantic UI. Do this instead:
+			$select.dropdown('set selected', entity_id);
+
+			// automatically submit when the selection changes
+			$select.change(function() {
 				// $(this).closest('form').trigger('submit');
 				$(this).closest('form').submit();
 			});
@@ -73,65 +81,8 @@
                 }
             });
 
-			var api_url = "{{ hypothesis_api_url }}";
-			var hypothesis_username = "{{ hypothesis_username }}";
-			$('#oral-histories-table tr').each(function() {
-				$this = $(this);
-				var hist_id = $this.data('id');
-				if (typeof hist_id !== 'undefined') {
-					// var page_url = Flask.url_for("main.histories", {"hist_id": hist_id, "_external": true});
-					var page_url = "{{ histories_base_url }}/" + hist_id;
-					var $cellToUpdate = $this.find('td.total-annotation');
-					updateTotalAnnotations(page_url, api_url, $cellToUpdate);
-
-					var $cellToUpdate = $this.find('td.your-annotation');
-					updateYourAnnotations(page_url, api_url, hypothesis_username, $cellToUpdate);
-				}
-			});
 
         });
 
-		function updateTotalAnnotations(page_url, api_url, $cellToUpdate) {
-			$.ajax({
-				url: api_url + 'search',
-				type: 'GET',
-				dataType: 'json',
-				data: $.param({
-					'uri': page_url,
-					'limit': 0,
-				}),
-				complete: function (jqXHR, textStatus) {
-					// callback
-				},
-				success: function (data, textStatus, jqXHR) {
-					$cellToUpdate.text(data.total);
-				},
-				error: function (jqXHR, textStatus, errorThrown) {
-					console.log(errorThrown);
-				}
-			});
-		}
-
-		function updateYourAnnotations(page_url, api_url, hypothesis_username, $cellToUpdate) {
-			$.ajax({
-				url: api_url + 'search',
-				type: 'GET',
-				dataType: 'json',
-				data: $.param({
-					'uri': page_url,
-					'user': hypothesis_username,
-					'limit': 0,
-				}),
-				complete: function (jqXHR, textStatus) {
-					// callback
-				},
-				success: function (data, textStatus, jqXHR) {
-					$cellToUpdate.text(data.total);
-				},
-				error: function (jqXHR, textStatus, errorThrown) {
-					console.log(errorThrown);
-				}
-			});
-		}
     </script>
 {% endblock %}
