@@ -12,7 +12,7 @@ class Entity(db.Model):
 class WikipediaSuggest(db.Model):
     __tablename__ = 'wikipedia_suggest'
     id = db.Column(db.Integer, primary_key=True)
-    entity_id = db.Column(db.Integer)
+    entity_id = db.Column(db.Integer, index=True)
     wikipedia_page_id = db.Column(db.BigInteger)
     wikipedia_page_title = db.Column(db.String(128))
     confirmed = db.Column(db.Boolean, default=False)

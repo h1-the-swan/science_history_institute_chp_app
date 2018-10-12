@@ -114,7 +114,7 @@ def add_new_entity_metadata(entity_id):
     form = AddNewEntityMetadataForm()
     entity = Entity.query.get(entity_id)
     if form.validate_on_submit():
-        if Entity.query.filter_by(type_=form.type_.data).filter_by(description=form.description.data).one_or_none():
+        if EntityMeta.query.filter_by(type_=form.type_.data).filter_by(description=form.description.data).one_or_none():
             flash('this entity metadata already exists', 'error')
         else:
             entity_meta = EntityMeta(entity_id=entity_id, type_=form.type_.data, description=form.description.data)
@@ -129,5 +129,5 @@ def add_new_entity_metadata(entity_id):
 
 @experimental.route('/scratch')
 def scratch():
-    data = WikipediaSuggest.query.all()
+    data = EntityMeta.query.all()
     return render_template('experimental/scratch.html', data=data)

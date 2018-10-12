@@ -1,0 +1,64 @@
+{% extends 'layouts/base.html' %}
+
+{% block custom_head_tags %}
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.js"></script>
+	<style type="text/css" media="screen">
+		.searchbar {
+			position: fixed;
+		}
+	</style>
+{% endblock custom_head_tags %}
+
+{% block content %}
+{% if keyword %}
+	
+<div class="searchbar ui bottom fixed menu">
+Search:
+	<input type="search" value="{{ keyword }}">
+	<button data-search="next">&darr;</button>
+	<button data-search="prev">&uarr;</button>
+	<button data-search="clear">✖</button>
+</div>
+{% endif %}
+
+<div class="ui text container">
+	<h3>Media -- {{ entity_meta.entity.name }}</h3>
+	<button class="article__ann-counter"
+		data-hypothesis-trigger
+		title="Open annotation sidebar">
+		<span data-hypothesis-annotation-count>...</span>
+		
+	</button>
+	
+	<h3>{{ entity_meta.entity.description }}</h3>
+	{# <img src="{{ data['image'] }}" alt="{{ data[title] }}" height=""{{ data['image:height'] }}"" width="{{ data['image:width'] }}"/> #}
+	<div class="ui fluid image">
+		<img src="{{ data['image'] }}" alt="{{ data[title] }}"/>
+	</div>
+
+	<h3>Description</h3>
+	<p>{{ data['description'] }}</p>
+
+	<h3>URL</h3>
+	<a href="{{ data['url'] }}" target="_blank">{{ data['url'] }}</a>
+</div>
+
+
+  <script>
+    {% autoescape false %}
+      var hypothesisApiUrl = "{{ hypothesis_api_url }}";
+    {% endautoescape %}
+    {% if hypothesis_grant_token %}
+      var hypothesisGrantToken = "{{ hypothesis_grant_token }}";
+			console.log(hypothesisGrantToken);
+    {% else %}
+      var hypothesisGrantToken = null;
+    {% endif %}
+  </script>
+
+<script src="{{ url_for('static', filename='js/mark_oral_history.js') }}" async></script>
+<script src="{{ url_for('static', filename='hypothesisConfig.js') }}" async></script>
+<script src="{{ service_url }}/embed.js" async></script>
+{# <script src="{{ url_for('static', filename='embed.js') }}" async></script> #}
+{% endblock %}
+

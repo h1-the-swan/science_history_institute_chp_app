@@ -1,9 +1,9 @@
 from __future__ import unicode_literals
-import os, json
+import sys, os, json
 from flask import Blueprint, render_template, url_for, redirect, current_app, jsonify, request
 from flask_login import current_user, login_required
 
-from app.models import EditableHTML, OralHistory, Entity, WikipediaSuggest
+from app.models import EditableHTML, OralHistory, Entity, WikipediaSuggest, EntityMeta
 from app.load_oral_histories import preprocess_oral_history
 
 from app.main.forms import SelectEntity
@@ -106,16 +106,37 @@ def entities():
     return render_template('main/entities.html', entities=entities)
 
 @main.route('/media')
+@main.route('/media/<entity_id>')
 @login_required
-def media():
-    entities_media = Entity.query.filter(Entity.description.like('media:%')).all()
+def media(entity_id=None):
     service_url = current_app.hypothesis_client.service
     # hypothesis_api_url = "https://hypothes.is/api/"
     hypothesis_api_url = service_url + '/api/'
     hypothesis_username = "acct:{username}@{authority}".format(username=current_user.username, authority=os.environ.get('HYPOTHESIS_AUTHORITY'))
-    data = OralHistory.query.all()
-    histories_base_url = url_for("main.histories", _external=True)
-    return render_template('main/media.html', data=entities_media, hypothesis_api_url=hypothesis_api_url, hypothesis_username=hypothesis_username, histories_base_url=histories_base_url)
+    if entity_id is None:
+        entities_media = Entity.query.filter(Entity.description.like('media:%')).all()
+        histories_base_url = url_for("main.histories", _external=True)
+        return render_template('main/media.html', data=entities_media, hypothesis_api_url=hypothesis_api_url, hypothesis_username=hypothesis_username, histories_base_url=histories_base_url)
+
+    if sys.version_info[0] < 3:
+        import opengraph
+    else:
+        import opengraph_py3 as opengraph
+    entity_meta = EntityMeta.query \
+                    .filter_by(entity_id=entity_id) \
+                    .filter(EntityMeta.type_.like("opengraph_url")) \
+                    .all()
+    if not entity_meta:
+        data = None
+    else:
+        entity_meta = entity_meta[-1]
+        url = entity_meta.description
+        data = opengraph.OpenGraph(url=url)
+
+    hypothesis_grant_token = current_app.hypothesis_client.grant_token(username=current_user.username)
+
+    keyword = request.args.get('mark', None)
+    return render_template('main/display_media.html', data=data, entity_meta=entity_meta, hypothesis_api_url=hypothesis_api_url, hypothesis_grant_token=hypothesis_grant_token.decode(), service_url=service_url)
 
 @main.route('/_login_fake')
 def _login_fake():
