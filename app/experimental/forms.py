@@ -22,3 +22,8 @@ class AddNewEntityForm(FlaskForm):
 
     submit = SubmitField('Submit')
 
+class AddNewEntityMetadataForm(FlaskForm):
+    type_ = StringField('Type', validators=[InputRequired()])
+    description = StringField('Description')
+    submit = SubmitField('Submit')
+

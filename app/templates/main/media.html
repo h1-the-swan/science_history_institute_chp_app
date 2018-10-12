@@ -1,0 +1,134 @@
+{% extends 'layouts/base.html' %}
+
+{% block content %}
+    <div class="ui stackable grid container">
+        <div class="sixteen wide tablet twelve wide computer centered column">
+            <h2 class="ui header">
+                Media
+                <div class="sub header">
+                    Select to view the item and annotations.
+                </div>
+            </h2>
+
+            <div class="ui menu">
+                <div class="ui search item">
+                    <div class="ui transparent icon input">
+                        <input id="search-media" type="text" placeholder="Search…">
+                        <i class="search icon"></i>
+                    </div>
+                </div>
+            </div>
+
+            {# Use overflow-x: scroll so that mobile views don't freak out
+             # when the table is too wide #}
+            <div style="overflow-x: scroll;">
+                <table id="media-table" class="ui searchable sortable unstackable selectable celled table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Description</th>
+                            <th>Total Annotations</th>
+                            <th>Your Annotations</th>
+                            <th>Wikipedia</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for media_ent in data %}
+                        <tr data-id="{{ media_ent.id }}" onclick="window.location.href = '{{ url_for('main.histories', hist_id=media_ent.id) }}';">
+
+                            <td>{{ media_ent.name }}</td>
+                            <td>{{ media_ent.description }}</td>
+														<td class="total-annotation">...</td>
+														<td class="your-annotation">...</td>
+														<td>
+															{% if media_ent.wikipedia_suggest %}
+															<a href="{{ media_ent.wikipedia_suggest[0].wikipedia_url }}" target="_blank"><img src="https://upload.wikimedia.org/wikipedia/commons/b/b0/Wikipedia-favicon.png" alt="wikipedia icon"/></a>
+															{% endif %}
+														</td>
+														
+														
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#search-media').keyup(function () {
+                var searchText = $(this).val();
+                if (searchText.length > 0) {
+                    $('tbody td:icontains(' + searchText + ')').addClass('positive');
+                    $('td.positive').not(':icontains(' + searchText + ')').removeClass('positive');
+                    $('tbody td').not(':icontains(' + searchText + ')').closest('tr').addClass('hidden').hide();
+                    $('tr.hidden:icontains(' + searchText + ')').removeClass('hidden').show();
+                } else {
+                    $('td.positive').removeClass('positive');
+                    $('tr.hidden').removeClass('hidden').show();
+                }
+            });
+
+			var api_url = "{{ hypothesis_api_url }}";
+			var hypothesis_username = "{{ hypothesis_username }}";
+			$('#media-table tr').each(function() {
+				$this = $(this);
+				var hist_id = $this.data('id');
+				if (typeof hist_id !== 'undefined') {
+					// var page_url = Flask.url_for("main.histories", {"hist_id": hist_id, "_external": true});
+					var page_url = "{{ histories_base_url }}/" + hist_id;
+					var $cellToUpdate = $this.find('td.total-annotation');
+					updateTotalAnnotations(page_url, api_url, $cellToUpdate);
+
+					var $cellToUpdate = $this.find('td.your-annotation');
+					updateYourAnnotations(page_url, api_url, hypothesis_username, $cellToUpdate);
+				}
+			});
+
+        });
+
+		function updateTotalAnnotations(page_url, api_url, $cellToUpdate) {
+			$.ajax({
+				url: api_url + 'search',
+				type: 'GET',
+				dataType: 'json',
+				data: $.param({
+					'uri': page_url,
+					'limit': 0,
+				}),
+				complete: function (jqXHR, textStatus) {
+					// callback
+				},
+				success: function (data, textStatus, jqXHR) {
+					$cellToUpdate.text(data.total);
+				},
+				error: function (jqXHR, textStatus, errorThrown) {
+					console.log(errorThrown);
+				}
+			});
+		}
+
+		function updateYourAnnotations(page_url, api_url, hypothesis_username, $cellToUpdate) {
+			$.ajax({
+				url: api_url + 'search',
+				type: 'GET',
+				dataType: 'json',
+				data: $.param({
+					'uri': page_url,
+					'user': hypothesis_username,
+					'limit': 0,
+				}),
+				complete: function (jqXHR, textStatus) {
+					// callback
+				},
+				success: function (data, textStatus, jqXHR) {
+					$cellToUpdate.text(data.total);
+				},
+				error: function (jqXHR, textStatus, errorThrown) {
+					console.log(errorThrown);
+				}
+			});
+		}
+    </script>
+{% endblock %}

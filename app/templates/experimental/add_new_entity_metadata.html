@@ -1,0 +1,9 @@
+{% extends 'layouts/base.html' %}
+{% import 'macros/form_macros.html' as f %}
+
+{% block content %}
+<h1>Add new entity metadata for entity "{{ entity.name }}"</h1>
+<div class="ui text container">
+	{{ f.render_form(form) }}
+</div>
+{% endblock %}

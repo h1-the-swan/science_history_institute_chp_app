@@ -5,10 +5,10 @@ from flask import Blueprint, render_template, url_for, redirect, current_app, js
 from flask_login import current_user, login_required
 
 from app import db
-from app.models import EditableHTML, OralHistory, WikipediaSuggest, Entity
+from app.models import EditableHTML, OralHistory, WikipediaSuggest, Entity, EntityMeta
 from app.wikipedia import search_wikipedia
 
-from app.experimental.forms import SelectOralHistory, AddNewEntityForm
+from app.experimental.forms import SelectOralHistory, AddNewEntityForm, AddNewEntityMetadataForm
 
 experimental = Blueprint('experimental', __name__)
 
@@ -90,14 +90,42 @@ def add_new_entity():
             entity_id = entity.id
             entity_name = entity.name
             wikipedia_page_title = form.wikipedia_page_title.data
-            # if the user entered a url, just get the page title
-            if wikipedia_page_title.startswith('http'):
-                wikipedia_page_title = wikipedia_page_title.split('/')[-1]
-            ws = WikipediaSuggest(entity_id=entity_id, wikipedia_page_title=wikipedia_page_title, confirmed=True)
-            db.session.add(ws)
+            if wikipedia_page_title:
+                # if the user entered a url, just get the page title
+                if wikipedia_page_title.startswith('http'):
+                    wikipedia_page_title = wikipedia_page_title.split('/')[-1]
+                ws = WikipediaSuggest(entity_id=entity_id, wikipedia_page_title=wikipedia_page_title, confirmed=True)
+                db.session.add(ws)
+                wikipedia_added = True
+            else:
+                wikipedia_added = False
+
             db.session.commit()
-            flash('added entity {} (id {})'.format(entity_name, entity_id), 'info')
+
+            if wikipedia_added is True:
+                flash('added entity {} (id {}) (with Wikipedia link)'.format(entity_name, entity_id), 'info')
+            else:
+                flash('added entity {} (id {})'.format(entity_name, entity_id), 'info')
     return render_template('experimental/add_new_entity.html', form=form)
+
+@experimental.route('/add_new_entity_metadata/<entity_id>', methods=['GET', 'POST'])
+@login_required
+def add_new_entity_metadata(entity_id):
+    form = AddNewEntityMetadataForm()
+    entity = Entity.query.get(entity_id)
+    if form.validate_on_submit():
+        if Entity.query.filter_by(type_=form.type_.data).filter_by(description=form.description.data).one_or_none():
+            flash('this entity metadata already exists', 'error')
+        else:
+            entity_meta = EntityMeta(entity_id=entity_id, type_=form.type_.data, description=form.description.data)
+            db.session.add(entity_meta)
+            db.session.flush()
+            entity_meta_id = entity_meta.id
+
+            db.session.commit()
+
+            flash('added entity metadata row (id {})'.format(entity_meta_id), 'info')
+    return render_template('experimental/add_new_entity_metadata.html', form=form, entity=entity)
 
 @experimental.route('/scratch')
 def scratch():

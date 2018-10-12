@@ -105,6 +105,18 @@ def entities():
     entities = Entity.query.all()
     return render_template('main/entities.html', entities=entities)
 
+@main.route('/media')
+@login_required
+def media():
+    entities_media = Entity.query.filter(Entity.description.like('media:%')).all()
+    service_url = current_app.hypothesis_client.service
+    # hypothesis_api_url = "https://hypothes.is/api/"
+    hypothesis_api_url = service_url + '/api/'
+    hypothesis_username = "acct:{username}@{authority}".format(username=current_user.username, authority=os.environ.get('HYPOTHESIS_AUTHORITY'))
+    data = OralHistory.query.all()
+    histories_base_url = url_for("main.histories", _external=True)
+    return render_template('main/media.html', data=entities_media, hypothesis_api_url=hypothesis_api_url, hypothesis_username=hypothesis_username, histories_base_url=histories_base_url)
+
 @main.route('/_login_fake')
 def _login_fake():
     return render_template('main._login_fake.html')

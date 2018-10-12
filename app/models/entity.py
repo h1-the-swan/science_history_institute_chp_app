@@ -3,8 +3,8 @@ from app import db
 class Entity(db.Model):
     __tablename__ = 'entities'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(64))
-    description = db.Column(db.Text)
+    name = db.Column(db.String(64), index=True)
+    description = db.Column(db.Text, index=True)
 
     def __repr__(self):
         return "<Entity '{}'>".format(self.name)
@@ -22,4 +22,13 @@ class WikipediaSuggest(db.Model):
     @property
     def wikipedia_url(self):
         return "https://en.wikipedia.org/wiki/{}".format(self.wikipedia_page_title)
+
+class EntityMeta(db.Model):
+    __tablename__ = 'entities_meta'
+    id = db.Column(db.Integer, primary_key=True)
+    entity_id = db.Column(db.Integer)
+    type_ = db.Column(db.String(64), index=True)
+    description = db.Column(db.Text)
+    entity = db.relationship('Entity', foreign_keys=[entity_id], primaryjoin='Entity.id == EntityMeta.entity_id', backref='entity_meta', uselist=False, lazy=True)
+
 
