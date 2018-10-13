@@ -114,9 +114,9 @@ def media(entity_id=None):
     hypothesis_api_url = service_url + '/api/'
     hypothesis_username = "acct:{username}@{authority}".format(username=current_user.username, authority=os.environ.get('HYPOTHESIS_AUTHORITY'))
     if entity_id is None:
+        media_base_url = url_for("main.media", _external=True)
         entities_media = Entity.query.filter(Entity.description.like('media:%')).all()
-        histories_base_url = url_for("main.histories", _external=True)
-        return render_template('main/media.html', data=entities_media, hypothesis_api_url=hypothesis_api_url, hypothesis_username=hypothesis_username, histories_base_url=histories_base_url)
+        return render_template('main/media.html', data=entities_media, hypothesis_api_url=hypothesis_api_url, hypothesis_username=hypothesis_username, media_base_url=media_base_url)
 
     if sys.version_info[0] < 3:
         import opengraph

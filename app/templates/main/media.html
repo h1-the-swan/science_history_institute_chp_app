@@ -34,7 +34,7 @@
                     </thead>
                     <tbody>
                     {% for media_ent in data %}
-                        <tr data-id="{{ media_ent.id }}" onclick="window.location.href = '{{ url_for('main.histories', hist_id=media_ent.id) }}';">
+                        <tr data-id="{{ media_ent.id }}" onclick="window.location.href = '{{ url_for('main.media', entity_id=media_ent.id) }}';">
 
                             <td>{{ media_ent.name }}</td>
                             <td>{{ media_ent.description }}</td>
@@ -74,10 +74,10 @@
 			var hypothesis_username = "{{ hypothesis_username }}";
 			$('#media-table tr').each(function() {
 				$this = $(this);
-				var hist_id = $this.data('id');
-				if (typeof hist_id !== 'undefined') {
+				var entity_id = $this.data('id');
+				if (typeof entity_id !== 'undefined') {
 					// var page_url = Flask.url_for("main.histories", {"hist_id": hist_id, "_external": true});
-					var page_url = "{{ histories_base_url }}/" + hist_id;
+					var page_url = "{{ media_base_url }}/" + entity_id;
 					var $cellToUpdate = $this.find('td.total-annotation');
 					updateTotalAnnotations(page_url, api_url, $cellToUpdate);
 
