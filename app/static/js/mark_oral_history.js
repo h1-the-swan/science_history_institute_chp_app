@@ -50,7 +50,8 @@ $(document).ready(function() {
       if ($current.length) {
         $current.addClass(currentClass);
         position = $current.offset().top - offsetTop;
-        window.scrollTo(0, position);
+        // window.scrollTo(0, position);
+		$('html, body').animate({scrollTop: position}, 500);
       }
     }
   }
@@ -66,6 +67,7 @@ $(document).ready(function() {
       done: function() {
         $content.mark(searchVal, {
           separateWordSearch: true,
+		  accuracy: "exactly",
           done: function() {
             $results = $content.find("mark");
             currentIndex = 0;

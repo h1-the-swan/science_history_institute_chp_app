@@ -29,22 +29,22 @@
                             <th>Filename</th>
                             <th>Total Annotations</th>
                             <th>Your Annotations</th>
-                            <th>Wikipedia</th>
                         </tr>
                     </thead>
                     <tbody>
                     {% for oral_hist in data %}
                         <tr data-id="{{ oral_hist.id }}" onclick="window.location.href = '{{ url_for('main.histories', hist_id=oral_hist.id) }}';">
 
-                            <td>{{ oral_hist.full_name }}</td>
-                            <td>{{ oral_hist.fname_base }}</td>
-														<td class="total-annotation">...</td>
-														<td class="your-annotation">...</td>
-														<td>
+                            <td>
+															{{ oral_hist.full_name }}
 															{% if oral_hist.entity.wikipedia_suggest %}
+															&nbsp;
 															<a href="{{ oral_hist.entity.wikipedia_suggest[0].wikipedia_url }}" target="_blank"><img src="https://upload.wikimedia.org/wikipedia/commons/b/b0/Wikipedia-favicon.png" alt="wikipedia icon"/></a>
 															{% endif %}
 														</td>
+                            <td>{{ oral_hist.fname_base }}</td>
+														<td class="total-annotation">...</td>
+														<td class="your-annotation">...</td>
 														
 														
                         </tr>

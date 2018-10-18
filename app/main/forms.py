@@ -13,5 +13,6 @@ from wtforms.fields.html5 import EmailField
 from wtforms.validators import Email, EqualTo, InputRequired, Length
 
 class SelectEntity(FlaskForm):
-    choice = SelectField(coerce=int)
+    # choice = SelectField(coerce=int)
+    choice = SelectField()
 

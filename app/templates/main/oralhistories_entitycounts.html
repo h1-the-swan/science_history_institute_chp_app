@@ -4,7 +4,8 @@
 
 {% block content %}
     <div class="ui stackable grid container">
-		{{ f.render_form(form, extra_classes='name_select_form') }}
+				{{ f.render_form(form_categories, extra_classes='category_select_form') }}
+				{{ f.render_form(form, extra_classes='name_select_form') }}
         <div class="sixteen wide tablet twelve wide computer centered column">
             <h2 class="ui header">
                 Oral Histories
@@ -30,14 +31,14 @@
                         <tr>
                             <th>Interviewee</th>
                             <th>Filename</th>
-														<th>Mentions of {{ entity.name }}</th>
+														<th>Mentions of {{ entity_name }}</th>
                         </tr>
                     </thead>
                     <tbody>
                     {% for oral_hist in data %}
 										{% if mentions_data[oral_hist.id] %}
 											
-                        <tr data-id="{{ oral_hist.id }}" onclick="window.location.href = '{{ url_for('main.histories', hist_id=oral_hist.id, mark=entity.name) }}';">
+                        <tr data-id="{{ oral_hist.id }}" onclick="window.location.href = '{{ url_for('main.histories', hist_id=oral_hist.id, mark=entity_name) }}';">
 
                             <td>{{ oral_hist.full_name }}</td>
                             <td>{{ oral_hist.fname_base }}</td>
@@ -56,11 +57,23 @@
     <script type="text/javascript">
         $(document).ready(function () {
 
-			var entity_id = "{{ entity.id }}";
+			var entity_name = "{{ entity_name }}";
 			var $select = $('.name_select_form select');
 			// $select.val("153");
 			// The above doesn't seem to work with Semantic UI. Do this instead:
-			$select.dropdown('set selected', entity_id);
+			$select.dropdown('set selected', entity_name.toLowerCase());
+
+			var options = [];
+			var entities_cats = {{ entities_cats | tojson }};
+			$select.find('option').each(function() {
+				options.push({
+					value: $(this).val(),
+					text: $(this).text()
+				});
+				$(this).data('category', entities_cats[$(this).val()])
+			});
+			$select.data('options', options);
+			// $select.find('option').each(function() {console.log($(this).data('category'));});
 
 			// automatically submit when the selection changes
 			$select.change(function() {
@@ -80,6 +93,31 @@
                     $('tr.hidden').removeClass('hidden').show();
                 }
             });
+
+			var $cat_select = $('.category_select_form select');
+			console.log(entities_cats);
+			$cat_select.change(function() {
+				var options = $select.empty().data('options');
+				var selectedVal = $(this).val();
+				for (var i = 0, len = options.length; i < len; i++) {
+					var option = options[i];
+					if (entities_cats[option.value] == selectedVal) {
+						console.log(option);
+						$select.append(
+							$('<option>').text(option.text).val(option.value)
+						);
+					}
+				}
+				$select.dropdown('set selected', $select.find('option').first().val());
+				// $.each(options, function(i) {
+				// 	var option = options[i];
+				// 	if (entities_cats[option.value] == select) {
+				// 		$select.append(
+				// 			$('<option>').text(option.text).val(option.value)
+				// 		);
+				// 	}
+				// });
+			});
 
 
         });
