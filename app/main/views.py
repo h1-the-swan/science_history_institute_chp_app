@@ -2,6 +2,8 @@ from __future__ import unicode_literals
 import sys, os, json
 from flask import Blueprint, render_template, url_for, redirect, current_app, jsonify, request
 from flask_login import current_user, login_required
+import tempfile
+import boto3
 
 from app.models import EditableHTML, OralHistory, Entity, WikipediaSuggest, EntityMeta
 from app.load_oral_histories import preprocess_oral_history
@@ -68,11 +70,32 @@ def histories_entitycounts(entity_name):
     mentions_data = {}
 
     entities_with_mentions = set()
-    with open(os.path.join(current_app.static_folder, "entities_counts.tsv"), 'r') as f:
-        for i, line in enumerate(f):
-            # skip header
-            if i == 0:
-                continue
+    # with open(os.path.join(current_app.static_folder, "entities_counts.tsv"), 'r') as f:
+    #     for i, line in enumerate(f):
+    #         # skip header
+    #         if i == 0:
+    #             continue
+    #         line_split = line.strip().split('\t')
+    #         row = {
+    #             'term': line_split[0],
+    #             'oral_history_id': int(line_split[1]),
+    #             'oral_history_fname_base': line_split[2],
+    #             'num_mentions': int(line_split[3]),
+    #         }
+    #         # entities_with_mentions.add(row['entity_id'])
+    #         entities_with_mentions.add(row['term'])
+    #         if entity_name.lower() == row['term'].lower():
+    #             mentions_data[row['oral_history_id']] = row['num_mentions']
+    s3 = boto3.resource('s3')
+    s3_obj = file_content = s3.Object('datalab-projects', 'science-history-institute/entities_counts.tsv')
+    file_content = s3_obj.get()['Body'].read().decode('utf-8')
+    i = 0
+    for line in file_content.split('\n'):
+        # skip header
+        if i == 0:
+            i += 1
+            continue
+        if line:
             line_split = line.strip().split('\t')
             row = {
                 'term': line_split[0],
@@ -84,6 +107,8 @@ def histories_entitycounts(entity_name):
             entities_with_mentions.add(row['term'])
             if entity_name.lower() == row['term'].lower():
                 mentions_data[row['oral_history_id']] = row['num_mentions']
+        i += 1
+
     data = OralHistory.query.all()
     histories_base_url = url_for("main.histories", _external=True)
 
@@ -99,8 +124,15 @@ def histories_entitycounts(entity_name):
     form.terms.choices.sort(key=lambda x: x[1])
 
     entities_cats = {}
-    with open(os.path.join(current_app.static_folder, "entities_searchterms.tsv"), 'r') as f:
-        for line in f:
+    # with open(os.path.join(current_app.static_folder, "entities_searchterms.tsv"), 'r') as f:
+    #     for line in f:
+    #         row = line.strip().split('\t')
+    #         entities_cats[row[0].lower()] = row[1]
+    s3_obj = file_content = s3.Object('datalab-projects', 'science-history-institute/entities_searchterms.tsv')
+    file_content = s3_obj.get()['Body'].read().decode('utf-8')
+    i = 0
+    for line in file_content.split('\n'):
+        if line:
             row = line.strip().split('\t')
             entities_cats[row[0].lower()] = row[1]
     form.categories.choices = [("all", "All")] + [(cat, cat) for cat in set(entities_cats.values())]

@@ -3,12 +3,7 @@
 {% block content %}
 <div class="ui text container">
 	{% for item in data %}
-	<p>{{ item.entity_id }}</p>
-	<p>{{ item.entity.name }}</p>
-	<p>{{ item.type_ }}</p>
-	<p>{{ item.description }}</p>
-	<p>{{ item.entity.description }}</p>
-	<hr>
+	<p>{{ item }}</p>
 	{% endfor %}
 </div>
 {% endblock %}

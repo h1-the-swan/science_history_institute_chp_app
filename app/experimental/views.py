@@ -129,5 +129,14 @@ def add_new_entity_metadata(entity_id):
 
 @experimental.route('/scratch')
 def scratch():
-    data = EntityMeta.query.all()
+    # data = EntityMeta.query.all()
+    import boto3
+    s3 = boto3.resource('s3')
+    s3_obj = file_content = s3.Object('datalab-projects', 'science-history-institute/entities_counts.tsv')
+    file_content = s3_obj.get()['Body'].read().decode('utf-8')
+    data = []
+    for line in file_content.split('\n'):
+        if line:
+            line = line.strip().split('\t')
+            data.append(line[1])
     return render_template('experimental/scratch.html', data=data)
