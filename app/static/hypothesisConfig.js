@@ -17,8 +17,8 @@
 
   window.hypothesisConfig = function () {
     return {
-      enableExperimentalNewNoteButton: true,
-      theme: 'clean',
+      // enableExperimentalNewNoteButton: true,
+      // theme: 'clean',
       // usernameUrl: 'http://www.elife.org/user/',
       branding: {
         // Match the body's background color.

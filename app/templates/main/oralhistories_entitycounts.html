@@ -75,6 +75,35 @@
 			$select.data('options', options);
 			// $select.find('option').each(function() {console.log($(this).data('category'));});
 
+			var $cat_select = $('.category_select_form select');
+			$cat_select.dropdown('set selected', entities_cats[entity_name.toLowerCase()]);
+			$cat_select.change(function() {
+				$select.empty();
+				$select.parent().find('.text').text('');
+				var options = $select.data('options');
+				// blank entry at top
+				// $select.append( $('<option>').text('').val('_blank'));
+				// $select.dropdown('set selected', '_blank');
+				var selectedVal = $(this).val();
+				for (var i = 0, len = options.length; i < len; i++) {
+					var option = options[i];
+					if (entities_cats[option.value] == selectedVal) {
+						$select.append(
+							$('<option>').text(option.text).val(option.value)
+						);
+					}
+				}
+				$select.dropdown('set selected', $select.find('option').first().val());
+				// $.each(options, function(i) {
+				// 	var option = options[i];
+				// 	if (entities_cats[option.value] == select) {
+				// 		$select.append(
+				// 			$('<option>').text(option.text).val(option.value)
+				// 		);
+				// 	}
+				// });
+			});
+			
 			// automatically submit when the selection changes
 			$select.change(function() {
 				// $(this).closest('form').trigger('submit');
@@ -94,30 +123,6 @@
                 }
             });
 
-			var $cat_select = $('.category_select_form select');
-			console.log(entities_cats);
-			$cat_select.change(function() {
-				var options = $select.empty().data('options');
-				var selectedVal = $(this).val();
-				for (var i = 0, len = options.length; i < len; i++) {
-					var option = options[i];
-					if (entities_cats[option.value] == selectedVal) {
-						console.log(option);
-						$select.append(
-							$('<option>').text(option.text).val(option.value)
-						);
-					}
-				}
-				$select.dropdown('set selected', $select.find('option').first().val());
-				// $.each(options, function(i) {
-				// 	var option = options[i];
-				// 	if (entities_cats[option.value] == select) {
-				// 		$select.append(
-				// 			$('<option>').text(option.text).val(option.value)
-				// 		);
-				// 	}
-				// });
-			});
 
 
         });
