@@ -4,7 +4,6 @@
 
 {% block content %}
     <div class="ui stackable grid container">
-				{{ f.render_form(form_categories, extra_classes='category_select_form') }}
 				{{ f.render_form(form, extra_classes='name_select_form') }}
         <div class="sixteen wide tablet twelve wide computer centered column">
             <h2 class="ui header">
@@ -58,7 +57,7 @@
         $(document).ready(function () {
 
 			var entity_name = "{{ entity_name }}";
-			var $select = $('.name_select_form select');
+			var $select = $('.name_select_form select#terms');
 			// $select.val("153");
 			// The above doesn't seem to work with Semantic UI. Do this instead:
 			$select.dropdown('set selected', entity_name.toLowerCase());
@@ -75,7 +74,7 @@
 			$select.data('options', options);
 			// $select.find('option').each(function() {console.log($(this).data('category'));});
 
-			var $cat_select = $('.category_select_form select');
+			var $cat_select = $('.name_select_form select#categories');
 			$cat_select.dropdown('set selected', entities_cats[entity_name.toLowerCase()]);
 			$cat_select.change(function() {
 				$select.empty();
@@ -93,7 +92,10 @@
 						);
 					}
 				}
-				$select.dropdown('set selected', $select.find('option').first().val());
+				// $select.dropdown('set selected', $select.find('option').first().val());
+				$select.off('change');
+				$select.dropdown('clear');
+				setSelectFormSubmitTrigger();
 				// $.each(options, function(i) {
 				// 	var option = options[i];
 				// 	if (entities_cats[option.value] == select) {
@@ -104,11 +106,14 @@
 				// });
 			});
 			
-			// automatically submit when the selection changes
-			$select.change(function() {
-				// $(this).closest('form').trigger('submit');
-				$(this).closest('form').submit();
-			});
+			function setSelectFormSubmitTrigger() {
+				// automatically submit when the selection changes
+				$select.change(function() {
+					// $(this).closest('form').trigger('submit');
+					$(this).closest('form').submit();
+				});
+			}
+			setSelectFormSubmitTrigger();
 
             $('#search-oral-histories').keyup(function () {
                 var searchText = $(this).val();

@@ -14,5 +14,6 @@ from wtforms.validators import Email, EqualTo, InputRequired, Length
 
 class SelectEntity(FlaskForm):
     # choice = SelectField(coerce=int)
-    choice = SelectField()
+    categories = SelectField("Category")
+    terms = SelectField("Mentioned term")
 

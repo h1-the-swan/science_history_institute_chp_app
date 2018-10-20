@@ -89,26 +89,25 @@ def histories_entitycounts(entity_name):
 
     form = SelectEntity()
     # entities = Entity.query.filter(Entity.description.in_(['biotech_company', 'pharma_company'])).all()
-    form.choice.choices = []
+    form.terms.choices = []
     # for e in entities:
     #     if e.id in entities_with_mentions:
     #         form.choice.choices.append((e.id, e.name))
     for term in entities_with_mentions:
-        form.choice.choices.append((term.lower(), term))
+        form.terms.choices.append((term.lower(), term))
     # sort alphabetically by name
-    form.choice.choices.sort(key=lambda x: x[1])
-    if form.validate_on_submit():
-        selected_entity = form.choice.data
-        return redirect(url_for('main.histories_entitycounts', entity_name=selected_entity))
+    form.terms.choices.sort(key=lambda x: x[1])
 
     entities_cats = {}
     with open(os.path.join(current_app.static_folder, "entities_searchterms.tsv"), 'r') as f:
         for line in f:
             row = line.strip().split('\t')
             entities_cats[row[0].lower()] = row[1]
-    form_categories = SelectEntity()
-    form_categories.choice.choices = [(cat, cat) for cat in set(entities_cats.values())]
-    return render_template('main/oralhistories_entitycounts.html', data=data, mentions_data=mentions_data, entity_name=entity_name, form=form, form_categories=form_categories, entities_cats=entities_cats, hypothesis_api_url=hypothesis_api_url, hypothesis_username=hypothesis_username, histories_base_url=histories_base_url)
+    form.categories.choices = [("all", "All")] + [(cat, cat) for cat in set(entities_cats.values())]
+    if form.validate_on_submit():
+        selected_entity = form.terms.data
+        return redirect(url_for('main.histories_entitycounts', entity_name=selected_entity))
+    return render_template('main/oralhistories_entitycounts.html', data=data, mentions_data=mentions_data, entity_name=entity_name, form=form, entities_cats=entities_cats, hypothesis_api_url=hypothesis_api_url, hypothesis_username=hypothesis_username, histories_base_url=histories_base_url)
 
 @main.route('/entities')
 @login_required
