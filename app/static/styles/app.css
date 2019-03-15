@@ -23,3 +23,14 @@ nav .mobile.only.row .ui.vertical.menu {
 table.selectable tr:hover {
   cursor: pointer !important;
 }
+
+@media -sass-debug-info{filename{}line{font-family:\0000339}}
+body {
+  background: #030939;
+  color: #F5FEFE;
+}
+
+@media -sass-debug-info{filename{}line{font-family:\0000344}}
+.header {
+  color: inherit !important;
+}

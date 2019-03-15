@@ -1,8 +1,36 @@
 {% extends 'layouts/base.html' %}
 
 {% block content %}
-    <div class="ui text container">
-      <h1>Welcome to the Science History Institute Community History Platform</h1>
+    <div class="ui center aligned stackable grid container">
+			<div class="ui sixteen wide column">
+				<div class="ui large header">Welcome to the Community History Platform</div>
+				<hr>
+				<div class="ui huge header">The Origins of Biotech</div>
+			</div>
+
+			<div class="row">
+				<div class="ui eight wide column">
+					<a href="{{ url_for('main.histories') }}">
+						<img class="ui small centered image" src="{{ url_for('static', filename='images/btn_oral_histories.jpg') }}" alt="Click here to browse the oral histories"/>
+					</a>
+				</div>
+				<div class="ui eight wide column">
+					<a href="{{ url_for('main.histories') }}">
+						<img class="ui small centered image" src="{{ url_for('static', filename='images/btn_media_viewer.jpg') }}" alt="Click here to browse media objects"/>
+					</a>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="ui four wide column">
+					<img src="{{ url_for('static', filename='images/scihist_logo@2x.png' )}}" alt="Logo for Science History Institute"/>
+				</div>
+				<div class="ui twelve wide column">
+					
+				</div>
+			</div>
+			
+			
 
         <p>
 					The goal of the <a href="https://www.sciencehistory.org/" target="_blank">Science History Institute</a> Community History Platform is to facilitate a community effort to construct the history of the biotech industry in the Bay Area.
