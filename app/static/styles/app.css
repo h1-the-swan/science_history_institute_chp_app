@@ -31,6 +31,24 @@ body {
 }
 
 @media -sass-debug-info{filename{}line{font-family:\0000344}}
-.header {
-  color: inherit !important;
+.header.inverted, hr.inverted {
+  color: #F5FEFE !important;
+}
+
+@media -sass-debug-info{filename{}line{font-family:\0000349}}
+.button {
+  color: #080001 !important;
+  background-color: #a6e4d7 !important;
+  border-radius: 1.5rem !important;
+}
+
+@media -sass-debug-info{filename{}line{font-family:\0000355}}
+.primary.button {
+  margin-left: 1rem;
+  margin-right: 1rem;
+}
+
+@media -sass-debug-info{filename{}line{font-family:\0000360}}
+div.white {
+  background-color: white;
 }
