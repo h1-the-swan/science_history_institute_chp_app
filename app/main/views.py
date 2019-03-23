@@ -56,6 +56,39 @@ def histories(hist_id=None):
     keyword = request.args.get('mark', None)
     return render_template('main/display_oral_history.html', data=data, oral_hist=oral_hist, keyword=keyword, hypothesis_api_url=hypothesis_api_url, hypothesis_grant_token=hypothesis_grant_token.decode(), service_url=service_url)
 
+# ###DEV
+# @main.route('/histories')
+# @main.route('/histories/<hist_id>')
+# # @login_required
+# def histories(hist_id=None):
+#     service_url = current_app.hypothesis_client.service
+#     # hypothesis_api_url = "https://hypothes.is/api/"
+#     hypothesis_api_url = service_url + '/api/'
+#     # hypothesis_username = "acct:{username}@{authority}".format(username=current_user.username, authority=os.environ.get('HYPOTHESIS_AUTHORITY'))
+#     if hist_id is None:
+#         # data = OralHistory.query.all()
+#         data = []
+#         histories_base_url = url_for("main.histories", _external=True)
+#         return render_template('main/oralhistories.html', data=data, hypothesis_api_url=hypothesis_api_url, hypothesis_username=None, histories_base_url=histories_base_url)
+#
+#     oral_hist = {}
+#     document = {}
+#     # data = [p.text for p in document.paragraphs]
+#     data = {}
+#     # hypothesis_username = "{}_{}".format(current_user.first_name.lower(), current_user.last_name.lower())
+#     hypothesis_grant_token = "".encode()
+#
+#     # # get embed.js from the hypothesis service
+#     # try:
+#     #     from urllib.request import urlretrieve
+#     # except ImportError:
+#     #     from urllib import urlretrieve
+#     # embedjs_fname = os.path.join(current_app.static_folder, "embed.js")
+#     # urlretrieve(os.environ['HYPOTHESIS_SERVICE'] + "/embed.js", embedjs_fname)
+#
+#     keyword = request.args.get('mark', None)
+#     return render_template('main/display_oral_history.html', data=data, oral_hist=oral_hist, keyword=keyword, hypothesis_api_url=hypothesis_api_url, hypothesis_grant_token=hypothesis_grant_token.decode(), service_url=service_url)
+
 @main.route('/histories/entitycounts/<entity_name>', methods=['GET', 'POST'])
 @login_required
 def histories_entitycounts(entity_name):

@@ -1,4 +1,4 @@
-{% extends 'layouts/base.html' %}
+{% extends 'main/base_main.html' %}
 
 {% block custom_head_tags %}
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.js"></script>
@@ -9,7 +9,7 @@
 	</style>
 {% endblock custom_head_tags %}
 
-{% block content %}
+{% block main_content %}
 {% if keyword %}
 	
 <div class="searchbar ui bottom fixed menu">
@@ -21,7 +21,7 @@ Search:
 </div>
 {% endif %}
 
-<div class="ui text container">
+<div class="ui white text container">
 	<h3>Oral History -- {{ oral_hist.full_name}}</h3>
 	<button class="article__ann-counter"
 		data-hypothesis-trigger
