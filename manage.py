@@ -45,6 +45,25 @@ def recreate_db():
     db.create_all()
     db.session.commit()
 
+@manager.command
+def recreate_db_if_not_exists():
+    """
+    Recreates a local database. You probably should not use this on
+    production.
+    """
+    try:
+        User.query.filter_by(username='admin').one()
+        # if the above succeeds, do not recreate the database
+        RECREATE_DB = False
+    except:
+        # if the above failed, then recreate the database
+        RECREATE_DB = True
+
+    if RECREATE_DB is True:
+        db.drop_all()
+        db.create_all()
+        db.session.commit()
+
 
 @manager.option(
     '-n',
