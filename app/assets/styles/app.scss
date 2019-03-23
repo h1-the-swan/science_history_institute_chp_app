@@ -41,17 +41,22 @@ body {
 	color: #F5FEFE;
 }
 
-.header, hr {
-	color: inherit !important;
+.header.inverted, hr.inverted {
+	// color: inherit !important;
+	color: #F5FEFE !important;
 }
 
 .button {
 	color: #080001 !important;
 	background-color: #a6e4d7 !important;
+	border-radius: 1.5rem !important;
 }
 
 .primary.button {
 	margin-left: 1rem;
 	margin-right: 1rem;
-	border-radius: 1.5rem;
+}
+
+div.white {
+	background-color: white;
 }

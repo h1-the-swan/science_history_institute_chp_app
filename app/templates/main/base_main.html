@@ -2,11 +2,11 @@
 
 {% block content %}
     <div class="ui center aligned stackable grid container">
-			<div class="ui sixteen wide column">
-				<div class="ui large header">Welcome to the Community History Platform</div>
-				<hr>
-				<div class="ui huge header">The Origins of Biotech</div>
-			</div>
+			{% block main_header %}
+				<div class="ui sixteen wide column">
+					<a href="{{ url_for('main.index') }}"><div class="ui large inverted header">Community History Platform</div></a>
+				</div>
+			{% endblock main_header %}
 
 			{% block main_content %}
 			{% endblock main_content %}
