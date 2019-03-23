@@ -41,6 +41,17 @@ body {
 	color: #F5FEFE;
 }
 
-.header {
+.header, hr {
 	color: inherit !important;
+}
+
+.button {
+	color: #080001 !important;
+	background-color: #a6e4d7 !important;
+}
+
+.primary.button {
+	margin-left: 1rem;
+	margin-right: 1rem;
+	border-radius: 1.5rem;
 }

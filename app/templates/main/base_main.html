@@ -1,0 +1,35 @@
+{% extends 'layouts/base.html' %}
+
+{% block content %}
+    <div class="ui center aligned stackable grid container">
+			<div class="ui sixteen wide column">
+				<div class="ui large header">Welcome to the Community History Platform</div>
+				<hr>
+				<div class="ui huge header">The Origins of Biotech</div>
+			</div>
+
+			{% block main_content %}
+			{% endblock main_content %}
+
+			<div class="ui horizontal divider"></div>
+			
+			<div class="row">
+				<div class="ui four wide column">
+					<a href="https://www.sciencehistory.org/">
+						<img class="ui small centered image" src="{{ url_for('static', filename='images/scihist_logo@2x.png' )}}" alt="Logo for Science History Institute"/>
+					</a>
+				</div>
+				<div class="ui twelve wide right aligned column">
+					{% if current_user.is_authenticated %}
+						<a href="{{ url_for('account.logout') }}"<button type="button" class="ui primary big button">Log Out</button></a>
+						<a href="{{ url_for('account.manage') }}"<button type="button" class="ui primary big button">User Profile</button></a>
+					{% else %}
+						<a href="{{ url_for('account.login') }}"<button type="button" class="ui primary big button">Log In</button></a>
+						<a href="{{ url_for('account.register') }}"<button type="button" class="ui primary big button">Register</button></a>
+					{% endif %}
+					
+				</div>
+			</div>
+			
+    </div>
+{% endblock %}

@@ -18,12 +18,12 @@ $(document).ready(function () {
   $('table.ui.sortable').tablesort();
 
   // Enable dropdowns
-  $('.dropdown').dropdown();
-  $('select').dropdown();
-  function icontains(elem, text) {
-    return (elem.textContent || elem.innerText || $(elem).text() || "")
-      .toLowerCase().indexOf((text || "").toLowerCase()) > -1;
-  }
+  // $('.dropdown').dropdown();
+  // $('select').dropdown();
+  // function icontains(elem, text) {
+  //   return (elem.textContent || elem.innerText || $(elem).text() || "")
+  //     .toLowerCase().indexOf((text || "").toLowerCase()) > -1;
+  // }
 
   $.expr[':'].icontains = $.expr.createPseudo ?
     $.expr.createPseudo(function (text) {
