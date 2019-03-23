@@ -51,4 +51,5 @@ body {
 @media -sass-debug-info{filename{}line{font-family:\0000360}}
 div.white {
   background-color: white;
+  color: black;
 }
