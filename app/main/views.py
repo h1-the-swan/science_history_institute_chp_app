@@ -25,6 +25,54 @@ def about():
     return render_template(
         'main/about.html', editable_html_obj=editable_html_obj)
 
+def entities_helper():
+    s3 = boto3.resource('s3')
+    s3_obj = file_content = s3.Object('datalab-projects', 'science-history-institute/entities_counts.tsv')
+    file_content = s3_obj.get()['Body'].read().decode('utf-8')
+    i = 0
+    data = []
+    keywords_by_oral_hist = {}
+    for line in file_content.split('\n'):
+        # skip header
+        if i == 0:
+            i += 1
+            continue
+        if line:
+            line_split = line.strip().split('\t')
+            row = {
+                'term': line_split[0],
+                'oral_history_id': int(line_split[1]),
+                'oral_history_fname_base': line_split[2],
+                'num_mentions': int(line_split[3]),
+            }
+            # entities_with_mentions.add(row['entity_id'])
+            # entities_with_mentions.add(row['term'])
+            # if entity_name.lower() == row['term'].lower():
+            #     mentions_data[row['oral_history_id']] = row['num_mentions']
+            data.append(row)
+            if row['oral_history_id'] in keywords_by_oral_hist:
+                keywords_by_oral_hist[row['oral_history_id']].append((row['num_mentions'], row['term']))
+            else:
+                keywords_by_oral_hist[row['oral_history_id']] = [(row['num_mentions'], row['term'])]
+        i += 1
+    for k, v in keywords_by_oral_hist.items():
+        keywords_by_oral_hist[k] = sorted(v, reverse=True)
+    # entities_cats = {}
+    # # with open(os.path.join(current_app.static_folder, "entities_searchterms.tsv"), 'r') as f:
+    # #     for line in f:
+    # #         row = line.strip().split('\t')
+    # #         entities_cats[row[0].lower()] = row[1]
+    # s3_obj = file_content = s3.Object('datalab-projects', 'science-history-institute/entities_searchterms.tsv')
+    # file_content = s3_obj.get()['Body'].read().decode('utf-8')
+    # i = 0
+    # for line in file_content.split('\n'):
+    #     if line:
+    #         row = line.strip().split('\t')
+    #         entities_cats[row[0].lower()] = row[1]
+    return data, keywords_by_oral_hist
+
+
+
 @main.route('/histories')
 @main.route('/histories/<hist_id>')
 @login_required
@@ -36,7 +84,24 @@ def histories(hist_id=None):
     if hist_id is None:
         data = OralHistory.query.all()
         histories_base_url = url_for("main.histories", _external=True)
-        return render_template('main/oralhistories.html', data=data, hypothesis_api_url=hypothesis_api_url, hypothesis_username=hypothesis_username, histories_base_url=histories_base_url)
+
+        entities, keywords_by_oral_hist = entities_helper()
+        for oh in data:
+            oh.keywords = keywords_by_oral_hist.get(oh.id)
+            if oh.keywords:
+                kwds_display = []
+                for i, kwd in enumerate(oh.keywords):
+                    if i == 3:
+                        kwds_display.append("...")
+                        break
+                    kwds_display.append(kwd[1])
+                oh.keywords_display = "; ".join(kwds_display)
+            else:
+                oh.keywords_display = ""
+
+
+
+        return render_template('main/oralhistories.html', data=data, hypothesis_api_url=hypothesis_api_url, hypothesis_username=hypothesis_username, histories_base_url=histories_base_url, entities=entities)
 
     oral_hist = OralHistory.query.get(hist_id)
     document = oral_hist.parse()

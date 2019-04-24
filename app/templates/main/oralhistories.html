@@ -24,13 +24,17 @@
              # when the table is too wide #}
             <div class="row" style="overflow-x: scroll;">
 							<div class="three wide column">
-								d
+								<div class="ui card">
+									Faceted search will go here...
+								</div>
+								
 							</div>
-							<div class="thirteen wide right aligned column">
+							<div class="thirteen wide column">
                 <table id="oral-histories-table" class="ui searchable sortable unstackable selectable celled table">
                     <thead>
                         <tr>
                             <th>Interviewee</th>
+                            <th>Subject</th>
                             <th>Total Annotations</th>
                             <th>Your Annotations</th>
                         </tr>
@@ -46,6 +50,7 @@
 															<a href="{{ oral_hist.entity.wikipedia_suggest[0].wikipedia_url }}" target="_blank"><img src="https://upload.wikimedia.org/wikipedia/commons/b/b0/Wikipedia-favicon.png" alt="wikipedia icon"/></a>
 															{% endif %}
 														</td>
+														<td>{{ oral_hist.keywords_display }}</td>
 														<td class="total-annotation">...</td>
 														<td class="your-annotation">...</td>
 														
