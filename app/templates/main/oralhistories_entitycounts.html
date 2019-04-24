@@ -58,9 +58,9 @@
 
 			var entity_name = "{{ entity_name }}";
 			var $select = $('.name_select_form select#terms');
-			// $select.val("153");
+			$select.val("153");
 			// The above doesn't seem to work with Semantic UI. Do this instead:
-			$select.dropdown('set selected', entity_name.toLowerCase());
+			// $select.dropdown('set selected', entity_name.toLowerCase());
 
 			var options = [];
 			var entities_cats = {{ entities_cats | tojson }};
@@ -75,7 +75,7 @@
 			// $select.find('option').each(function() {console.log($(this).data('category'));});
 
 			var $cat_select = $('.name_select_form select#categories');
-			$cat_select.dropdown('set selected', entities_cats[entity_name.toLowerCase()]);
+			// $cat_select.dropdown('set selected', entities_cats[entity_name.toLowerCase()]);
 			$cat_select.change(function() {
 				$select.empty();
 				$select.parent().find('.text').text('');
@@ -94,7 +94,7 @@
 				}
 				// $select.dropdown('set selected', $select.find('option').first().val());
 				$select.off('change');
-				$select.dropdown('clear');
+				// $select.dropdown('clear');
 				setSelectFormSubmitTrigger();
 				// $.each(options, function(i) {
 				// 	var option = options[i];

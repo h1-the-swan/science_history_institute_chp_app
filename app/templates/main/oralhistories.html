@@ -2,31 +2,35 @@
 
 {% block main_content %}
     <div class="ui white stackable grid container">
-        <div class="sixteen wide tablet twelve wide computer centered column">
-            <h2 class="ui header">
-                Oral Histories
-                <div class="sub header">
-                    Select an oral history to view the transcript and annotations.
-                </div>
-            </h2>
+			<div class="sixteen wide centered column">
+				<h2 class="ui header">
+					Oral Histories
+					<div class="sub header">
+						Select an oral history to view the transcript and annotations.
+					</div>
+				</h2>
 
-            <div class="ui menu">
-                <div class="ui search item">
-                    <div class="ui transparent icon input">
-                        <input id="search-oral-histories" type="text" placeholder="Search…">
-                        <i class="search icon"></i>
-                    </div>
-                </div>
-            </div>
+				<div class="ui menu">
+					<div class="ui search item">
+						<div class="ui transparent icon input">
+							<input id="search-oral-histories" type="text" placeholder="Search…">
+							<i class="search icon"></i>
+						</div>
+					</div>
+				</div>
+			</div>
 
             {# Use overflow-x: scroll so that mobile views don't freak out
              # when the table is too wide #}
-            <div style="overflow-x: scroll;">
+            <div class="row" style="overflow-x: scroll;">
+							<div class="three wide column">
+								d
+							</div>
+							<div class="thirteen wide right aligned column">
                 <table id="oral-histories-table" class="ui searchable sortable unstackable selectable celled table">
                     <thead>
                         <tr>
                             <th>Interviewee</th>
-                            <th>Filename</th>
                             <th>Total Annotations</th>
                             <th>Your Annotations</th>
                         </tr>
@@ -42,7 +46,6 @@
 															<a href="{{ oral_hist.entity.wikipedia_suggest[0].wikipedia_url }}" target="_blank"><img src="https://upload.wikimedia.org/wikipedia/commons/b/b0/Wikipedia-favicon.png" alt="wikipedia icon"/></a>
 															{% endif %}
 														</td>
-                            <td>{{ oral_hist.fname_base }}</td>
 														<td class="total-annotation">...</td>
 														<td class="your-annotation">...</td>
 														
@@ -51,8 +54,9 @@
                     {% endfor %}
                     </tbody>
                 </table>
+								
+							</div>
             </div>
-        </div>
     </div>
 
     <script type="text/javascript">
