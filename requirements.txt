@@ -26,7 +26,7 @@ html2text==2018.1.9
 humanfriendly==4.16
 idna==2.7
 itsdangerous==0.24
-Jinja2==2.10
+Jinja2==2.11.3
 jmespath==0.9.3
 jsmin==2.2.2
 jsonpickle==0.9.6
