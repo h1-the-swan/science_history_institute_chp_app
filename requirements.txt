@@ -52,7 +52,7 @@ s3transfer==0.1.13
 six==1.11.0
 SQLAlchemy==1.2.10
 text-unidecode==1.2
-urllib3==1.23
+urllib3==1.26.5
 webassets==0.12.1
 Werkzeug==0.14.1
 Wikipedia-API==0.3.7
