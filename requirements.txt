@@ -38,7 +38,7 @@ packaging==17.1
 psycopg2==2.7.5
 pur==5.0.0
 pycurl==7.43.0.2
-PyJWT==1.6.4
+PyJWT==2.4.0
 pyparsing==2.2.0
 python-dateutil==2.7.3
 python-docx==0.8.6
